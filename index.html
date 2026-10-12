@@ -5,46 +5,63 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#4f46e5">
   <link rel="manifest" href="/manifest.json">
-  <title>SitePulse AI — Surveillance Web & Espace Client</title>
+  <title>SitePulse AI — Surveillance Web & Audit Nocturne Automatisé par IA</title>
+  
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  
   <style>
     :root {
-      --primary: #4f46e5;
-      --primary-hover: #4338ca;
+      --bg: #090d16;
+      --bg-surface: #0f172a;
+      --bg-card: #141e33;
+      --bg-card-hover: #1a2742;
+      --border: rgba(255, 255, 255, 0.08);
+      --border-focus: rgba(99, 102, 241, 0.6);
+      --primary: #6366f1;
+      --primary-hover: #4f46e5;
+      --primary-glow: rgba(99, 102, 241, 0.25);
+      --accent: #8b5cf6;
       --success: #10b981;
       --warning: #f59e0b;
       --danger: #ef4444;
-      --bg: #0b0f19;
-      --card-bg: #151d30;
-      --border: #232f48;
       --text: #f8fafc;
       --text-muted: #94a3b8;
+      --text-dim: #64748b;
     }
 
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    html {
+      scroll-behavior: smooth;
     }
 
     body {
       background-color: var(--bg);
       color: var(--text);
       line-height: 1.6;
-      padding-bottom: 80px;
+      overflow-x: hidden;
+      background-image: 
+        radial-gradient(circle at 50% 0%, rgba(99, 102, 241, 0.15) 0%, transparent 50%),
+        radial-gradient(circle at 85% 30%, rgba(139, 92, 246, 0.08) 0%, transparent 40%);
+      background-repeat: no-repeat;
     }
 
+    /* Navbar */
     header {
-      background: rgba(11, 15, 25, 0.95);
-      backdrop-filter: blur(12px);
-      border-bottom: 1px solid var(--border);
       position: sticky;
       top: 0;
-      z-index: 100;
-      padding: 14px 24px;
+      z-index: 1000;
+      background: rgba(9, 13, 22, 0.85);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+      padding: 16px 24px;
     }
 
     .nav-container {
@@ -53,26 +70,68 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      gap: 16px;
+      gap: 20px;
     }
 
-    .logo {
+    .brand {
       display: flex;
       align-items: center;
-      gap: 10px;
-      font-weight: 800;
-      font-size: 1.3rem;
-      color: #fff;
+      gap: 12px;
       text-decoration: none;
+      color: #fff;
     }
 
-    .logo-badge {
-      background: var(--primary);
-      color: white;
-      padding: 3px 8px;
+    .brand-icon {
+      width: 38px;
+      height: 38px;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      box-shadow: 0 0 20px var(--primary-glow);
+    }
+
+    .brand-title {
+      font-weight: 800;
+      font-size: 1.25rem;
+      letter-spacing: -0.02em;
+    }
+
+    .brand-tag {
+      background: rgba(99, 102, 241, 0.15);
+      color: #818cf8;
+      border: 1px solid rgba(99, 102, 241, 0.3);
+      padding: 2px 8px;
       border-radius: 6px;
-      font-size: 0.75rem;
+      font-size: 0.7rem;
       font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      list-style: none;
+    }
+
+    @media (max-width: 860px) {
+      .nav-links { display: none; }
+    }
+
+    .nav-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover {
+      color: #fff;
     }
 
     .nav-actions {
@@ -81,139 +140,271 @@
       gap: 12px;
     }
 
+    /* Buttons */
     .btn {
-      background: var(--primary);
-      color: white;
-      border: none;
-      padding: 10px 18px;
-      font-size: 0.9rem;
-      font-weight: 600;
-      border-radius: 10px;
-      cursor: pointer;
-      transition: all 0.2s;
       display: inline-flex;
       align-items: center;
+      justify-content: center;
       gap: 8px;
+      padding: 10px 20px;
+      border-radius: 10px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
       text-decoration: none;
+      transition: all 0.2s ease;
+      border: none;
+      white-space: nowrap;
     }
 
-    .btn:hover {
-      background: var(--primary-hover);
-      transform: translateY(-1px);
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      color: white;
+      box-shadow: 0 4px 15px var(--primary-glow);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
     }
 
     .btn-secondary {
-      background: transparent;
-      border: 1px solid var(--border);
+      background: rgba(255, 255, 255, 0.04);
       color: #fff;
+      border: 1px solid var(--border);
     }
 
     .btn-secondary:hover {
-      background: rgba(255, 255, 255, 0.05);
+      background: rgba(255, 255, 255, 0.08);
+      border-color: rgba(255, 255, 255, 0.15);
     }
 
-    .btn-danger {
-      background: rgba(239, 68, 68, 0.15);
-      border: 1px solid rgba(239, 68, 68, 0.3);
+    .btn-success {
+      background: linear-gradient(135deg, #10b981, #059669);
+      color: white;
+      box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+    }
+
+    .btn-success:hover {
+      transform: translateY(-2px);
+    }
+
+    .btn-danger-ghost {
+      background: transparent;
       color: #f87171;
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      padding: 6px 14px;
+      font-size: 0.8rem;
     }
 
-    .btn-danger:hover {
-      background: rgba(239, 68, 68, 0.25);
+    .btn-danger-ghost:hover {
+      background: rgba(239, 68, 68, 0.1);
     }
 
     .container {
-      max-width: 1100px;
+      max-width: 1200px;
       margin: 0 auto;
-      padding: 30px 20px;
+      padding: 0 24px;
     }
 
-    /* Auth Box Banner */
-    .user-pill {
-      display: flex;
+    /* Hero Section */
+    .hero {
+      text-align: center;
+      padding: 70px 0 50px;
+      position: relative;
+    }
+
+    .hero-badge {
+      display: inline-flex;
       align-items: center;
-      gap: 10px;
-      background: var(--card-bg);
-      border: 1px solid var(--border);
-      padding: 6px 14px;
-      border-radius: 30px;
+      gap: 8px;
+      background: rgba(99, 102, 241, 0.1);
+      border: 1px solid rgba(99, 102, 241, 0.3);
+      color: #a5b4fc;
+      padding: 6px 16px;
+      border-radius: 999px;
       font-size: 0.85rem;
-    }
-
-    .role-badge {
-      padding: 2px 8px;
-      border-radius: 12px;
-      font-size: 0.75rem;
-      font-weight: 700;
-    }
-    .role-admin { background: #818cf8; color: #0b0f19; }
-    .role-client { background: #34d399; color: #0b0f19; }
-
-    /* Dashboard Section (Logged In) */
-    #dashboard-section {
-      display: none;
-      background: var(--card-bg);
-      border: 1px solid var(--border);
-      border-radius: 20px;
-      padding: 28px;
-      margin-bottom: 40px;
-      box-shadow: 0 20px 40px -15px rgba(0,0,0,0.5);
-    }
-
-    .dash-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-bottom: 1px solid var(--border);
-      padding-bottom: 20px;
+      font-weight: 600;
       margin-bottom: 24px;
-      flex-wrap: wrap;
-      gap: 16px;
+      box-shadow: 0 0 15px rgba(99, 102, 241, 0.15);
     }
 
-    /* Search Box */
-    .search-box {
-      background: var(--card-bg);
-      border: 2px solid var(--border);
-      border-radius: 16px;
-      padding: 10px;
-      max-width: 760px;
+    .hero-badge-pulse {
+      width: 8px;
+      height: 8px;
+      background: #10b981;
+      border-radius: 50%;
+      box-shadow: 0 0 8px #10b981;
+    }
+
+    .hero h1 {
+      font-size: 3.5rem;
+      font-weight: 800;
+      line-height: 1.15;
+      letter-spacing: -0.03em;
+      margin-bottom: 20px;
+      max-width: 900px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    @media (max-width: 768px) {
+      .hero h1 { font-size: 2.3rem; }
+    }
+
+    .text-gradient {
+      background: linear-gradient(135deg, #ffffff 30%, #a5b4fc 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .text-highlight {
+      background: linear-gradient(135deg, #818cf8 0%, #c084fc 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero p {
+      color: var(--text-muted);
+      font-size: 1.2rem;
+      max-width: 680px;
       margin: 0 auto 40px;
-      display: flex;
-      gap: 10px;
+      font-weight: 400;
     }
 
-    .search-box input {
+    /* Live Search Audit Box */
+    .search-container {
+      max-width: 760px;
+      margin: 0 auto 50px;
+      background: rgba(20, 30, 51, 0.8);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 10px;
+      box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.5), 0 0 25px rgba(99, 102, 241, 0.1);
+      transition: border-color 0.3s;
+    }
+
+    .search-container:focus-within {
+      border-color: var(--border-focus);
+      box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.5), 0 0 35px rgba(99, 102, 241, 0.25);
+    }
+
+    .search-form {
+      display: flex;
+      gap: 12px;
+    }
+
+    @media (max-width: 640px) {
+      .search-form { flex-direction: column; }
+    }
+
+    .search-input-wrapper {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 18px;
+    }
+
+    .search-icon {
+      color: #64748b;
+      font-size: 1.2rem;
+    }
+
+    .search-input {
       flex: 1;
       background: transparent;
       border: none;
       outline: none;
       color: #fff;
-      font-size: 1.05rem;
-      padding: 10px 14px;
+      font-size: 1.1rem;
+      font-weight: 500;
     }
 
-    /* Results */
+    .search-input::placeholder {
+      color: #64748b;
+    }
+
+    .search-btn {
+      padding: 14px 28px;
+      font-size: 1rem;
+      font-weight: 700;
+      border-radius: 12px;
+    }
+
+    /* Stats strip */
+    .stats-strip {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 70px;
+    }
+
+    @media (max-width: 768px) {
+      .stats-strip { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    .stat-pill {
+      background: rgba(20, 30, 51, 0.5);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 18px;
+      text-align: center;
+    }
+
+    .stat-number {
+      font-size: 1.8rem;
+      font-weight: 800;
+      color: #fff;
+      letter-spacing: -0.02em;
+    }
+
+    .stat-desc {
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      margin-top: 4px;
+    }
+
+    /* Live Audit Result Section */
     #result-section {
       display: none;
-      margin-bottom: 40px;
+      margin-bottom: 60px;
+      animation: slideUp 0.4s ease forwards;
+    }
+
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     .result-card {
-      background: var(--card-bg);
-      border: 1px solid var(--border);
-      border-radius: 20px;
-      padding: 30px;
+      background: var(--bg-card);
+      border: 1px solid rgba(99, 102, 241, 0.3);
+      border-radius: 24px;
+      padding: 36px;
+      box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.6), 0 0 30px rgba(99, 102, 241, 0.15);
     }
 
-    .score-circle {
+    .res-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 24px;
+      margin-bottom: 28px;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+
+    .res-score-box {
       display: flex;
       align-items: center;
-      gap: 16px;
+      gap: 18px;
     }
 
-    .score-val {
-      font-size: 3rem;
+    .res-score-number {
+      font-size: 3.5rem;
       font-weight: 800;
       line-height: 1;
     }
@@ -221,132 +412,335 @@
     .grid-2 {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 20px;
-      margin: 20px 0;
+      gap: 24px;
+      margin-bottom: 24px;
     }
 
     @media (max-width: 768px) {
       .grid-2 { grid-template-columns: 1fr; }
-      .search-box { flex-direction: column; }
     }
 
-    .box {
-      background: rgba(11, 15, 25, 0.6);
+    .detail-box {
+      background: rgba(9, 13, 22, 0.6);
       border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 18px;
+      border-radius: 16px;
+      padding: 22px;
     }
 
-    .box h3 {
-      font-size: 1rem;
+    .detail-box h3 {
+      font-size: 1.05rem;
       font-weight: 700;
-      margin-bottom: 12px;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
 
-    .box ul {
+    .detail-box ul {
       list-style: none;
     }
 
-    .box ul li {
-      margin-bottom: 8px;
-      font-size: 0.9rem;
+    .detail-box ul li {
+      margin-bottom: 10px;
+      font-size: 0.95rem;
       color: #cbd5e1;
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
     }
 
-    /* Table */
+    /* Client Private Dashboard */
+    #dashboard-section {
+      display: none;
+      background: linear-gradient(180deg, rgba(20, 30, 51, 0.9) 0%, rgba(15, 23, 42, 0.9) 100%);
+      border: 1px solid rgba(99, 102, 241, 0.4);
+      border-radius: 24px;
+      padding: 32px;
+      margin-bottom: 60px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+    }
+
+    .dash-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 24px;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
     table {
       width: 100%;
       border-collapse: collapse;
-      margin-top: 14px;
+      margin-top: 16px;
     }
 
     th {
       color: var(--text-muted);
       font-size: 0.75rem;
       text-transform: uppercase;
-      padding: 12px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      padding: 14px;
       text-align: left;
       border-bottom: 1px solid var(--border);
     }
 
     td {
-      padding: 14px 12px;
-      border-bottom: 1px solid rgba(35, 47, 72, 0.6);
+      padding: 16px 14px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      font-size: 0.95rem;
+    }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      background: rgba(16, 185, 129, 0.15);
+      color: #34d399;
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+
+    /* Features Grid */
+    .section-header {
+      text-align: center;
+      margin-bottom: 48px;
+    }
+
+    .section-header h2 {
+      font-size: 2.2rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin-bottom: 12px;
+    }
+
+    .section-header p {
+      color: var(--text-muted);
+      font-size: 1.1rem;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      margin-bottom: 80px;
+    }
+
+    @media (max-width: 900px) {
+      .features-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 600px) {
+      .features-grid { grid-template-columns: 1fr; }
+    }
+
+    .feature-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 28px;
+      transition: all 0.3s ease;
+    }
+
+    .feature-card:hover {
+      border-color: rgba(99, 102, 241, 0.4);
+      transform: translateY(-4px);
+      box-shadow: 0 15px 30px -10px rgba(0, 0, 0, 0.5);
+    }
+
+    .feature-icon-box {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      background: rgba(99, 102, 241, 0.1);
+      border: 1px solid rgba(99, 102, 241, 0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      margin-bottom: 18px;
+    }
+
+    .feature-card h3 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+
+    .feature-card p {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+
+    /* How it works */
+    .steps-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      margin-bottom: 80px;
+    }
+
+    @media (max-width: 768px) {
+      .steps-grid { grid-template-columns: 1fr; }
+    }
+
+    .step-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 28px;
+      position: relative;
+    }
+
+    .step-badge {
+      width: 32px;
+      height: 32px;
+      background: var(--primary);
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 0.9rem;
+      margin-bottom: 16px;
+    }
+
+    .step-card h3 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .step-card p {
+      color: var(--text-muted);
       font-size: 0.9rem;
     }
 
-    .pill {
-      display: inline-block;
-      padding: 4px 10px;
-      border-radius: 6px;
-      font-weight: 700;
-      font-size: 0.8rem;
+    /* Pricing */
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      margin-bottom: 80px;
+      align-items: stretch;
     }
-    .pill-green { background: rgba(16, 185, 129, 0.15); color: #34d399; }
 
-    /* Modal Auth */
-    .modal-overlay {
+    @media (max-width: 900px) {
+      .pricing-grid { grid-template-columns: 1fr; max-width: 440px; margin-left: auto; margin-right: auto; }
+    }
+
+    .price-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 36px 28px;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    .price-card.featured {
+      border: 2px solid var(--primary);
+      background: linear-gradient(180deg, rgba(99, 102, 241, 0.1) 0%, rgba(20, 30, 51, 1) 100%);
+      box-shadow: 0 0 40px rgba(99, 102, 241, 0.2);
+      transform: scale(1.02);
+    }
+
+    .popular-tag {
+      position: absolute;
+      top: -12px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      color: white;
+      font-size: 0.75rem;
+      font-weight: 800;
+      padding: 4px 14px;
+      border-radius: 999px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .price-card h3 {
+      font-size: 1.3rem;
+      font-weight: 800;
+      margin-bottom: 6px;
+    }
+
+    .price-card .sub {
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      min-height: 40px;
+    }
+
+    .price-amount {
+      font-size: 2.8rem;
+      font-weight: 800;
+      margin: 20px 0 6px;
+      color: #fff;
+    }
+
+    .price-amount span {
+      font-size: 1rem;
+      font-weight: 500;
+      color: var(--text-muted);
+    }
+
+    .features-list {
+      list-style: none;
+      margin: 24px 0;
+      flex-grow: 1;
+    }
+
+    .features-list li {
+      margin-bottom: 12px;
+      font-size: 0.9rem;
+      color: #cbd5e1;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .features-list li::before {
+      content: '✓';
+      color: var(--success);
+      font-weight: 800;
+    }
+
+    /* Modal */
+    .modal-backdrop {
       display: none;
       position: fixed;
       inset: 0;
-      background: rgba(0, 0, 0, 0.75);
-      backdrop-filter: blur(6px);
-      z-index: 1000;
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(8px);
+      z-index: 2000;
       align-items: center;
       justify-content: center;
       padding: 20px;
     }
 
-    .modal-card {
-      background: var(--card-bg);
+    .modal-box {
+      background: var(--bg-card);
       border: 1px solid var(--border);
-      border-radius: 20px;
-      padding: 32px;
+      border-radius: 24px;
+      padding: 36px;
       width: 100%;
       max-width: 440px;
       position: relative;
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.7);
     }
 
-    .modal-card h2 {
-      font-size: 1.5rem;
-      font-weight: 800;
-      margin-bottom: 8px;
-    }
-
-    .modal-card p {
-      color: var(--text-muted);
-      font-size: 0.9rem;
-      margin-bottom: 24px;
-    }
-
-    .form-group {
-      margin-bottom: 16px;
-    }
-
-    .form-group label {
-      display: block;
-      font-size: 0.85rem;
-      font-weight: 600;
-      margin-bottom: 6px;
-      color: #cbd5e1;
-    }
-
-    .form-group input {
-      width: 100%;
-      background: rgba(11, 15, 25, 0.8);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 12px 14px;
-      color: #fff;
-      font-size: 0.95rem;
-      outline: none;
-    }
-
-    .form-group input:focus {
-      border-color: var(--primary);
-    }
-
-    .close-modal {
+    .modal-close {
       position: absolute;
       top: 20px;
       right: 20px;
@@ -356,283 +750,541 @@
       font-size: 1.5rem;
       cursor: pointer;
     }
+
+    .input-field {
+      margin-bottom: 16px;
+    }
+
+    .input-field label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 6px;
+      color: #cbd5e1;
+    }
+
+    .input-field input {
+      width: 100%;
+      background: rgba(9, 13, 22, 0.8);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px 16px;
+      color: #fff;
+      font-size: 0.95rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .input-field input:focus {
+      border-color: var(--primary);
+    }
+
+    /* Footer */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 50px 0 30px;
+      margin-top: 60px;
+      background: rgba(9, 13, 22, 0.9);
+    }
+
+    .footer-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+
+    .footer-copy {
+      color: var(--text-dim);
+      font-size: 0.85rem;
+    }
   </style>
 </head>
 <body>
 
-  <!-- Header -->
+  <!-- Navigation Bar -->
   <header>
     <div class="nav-container">
-      <a href="/" class="logo">
-        <span>⚡ SitePulse AI</span>
-        <span class="logo-badge">v2.0 Pro</span>
+      <a href="/" class="brand">
+        <div class="brand-icon">⚡</div>
+        <div>
+          <span class="brand-title">SitePulse<span style="color: var(--primary);">.AI</span></span>
+          <span class="brand-tag">SaaS Pro</span>
+        </div>
       </a>
 
-      <div class="nav-actions" id="auth-nav">
-        <!-- Rempli par JavaScript selon connexion -->
-        <button class="btn btn-secondary" onclick="openAuthModal('login')">🔑 Se connecter</button>
-        <button class="btn" onclick="openAuthModal('register')">✨ Créer un compte</button>
+      <ul class="nav-links">
+        <li><a href="#audit-live">Audit en Direct</a></li>
+        <li><a href="#fonctionnalites">Fonctionnalités</a></li>
+        <li><a href="#comment-ca-marche">Comment ça marche</a></li>
+        <li><a href="#tarifs">Tarifs</a></li>
+      </ul>
+
+      <div class="nav-actions" id="auth-nav-container">
+        <!-- Rempli par JavaScript (Boutons Auth ou Profil Connecté) -->
+        <button class="btn btn-secondary" onclick="openAuth('login')">Se connecter</button>
+        <button class="btn btn-primary" onclick="openAuth('register')">Créer un compte</button>
       </div>
     </div>
   </header>
 
   <div class="container">
 
-    <!-- Espace Membre Connecté -->
+    <!-- Espace Membre Client & Admin (Affiché uniquement si connecté) -->
     <section id="dashboard-section">
-      <div class="dash-header">
+      <div class="dash-top">
         <div>
-          <h2 style="font-size: 1.6rem; font-weight: 800;">Tableau de Bord Privé</h2>
-          <p id="dash-welcome" style="color: var(--text-muted); font-size: 0.9rem; margin-top: 4px;">Connecté en tant que...</p>
+          <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 6px;">
+            <h2 style="font-size: 1.8rem; font-weight: 800;">Espace de Surveillance Privé</h2>
+            <span id="role-pill" class="status-badge" style="background: rgba(99, 102, 241, 0.2); color: #818cf8; border-color: rgba(99, 102, 241, 0.4);">Chargement...</span>
+          </div>
+          <p id="user-info-text" style="color: var(--text-muted); font-size: 0.95rem;">Compte actif • Inspection automatique programmée à 00:00 UTC</p>
         </div>
         <div>
-          <button class="btn" onclick="promptAddSite()">+ Ajouter un site à surveiller</button>
+          <button class="btn btn-primary" onclick="promptAddSite()">+ Ajouter un site à surveiller</button>
         </div>
       </div>
 
       <div>
-        <h3 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 12px;" id="sites-table-title">Vos Sites Sous Surveillance Active (Audit Nocturne 00:00 UTC)</h3>
+        <h3 id="table-heading" style="font-size: 1.15rem; font-weight: 700; margin-bottom: 14px;">Vos Sites Sous Surveillance Active</h3>
         <div style="overflow-x: auto;">
           <table>
             <thead>
               <tr>
-                <th>Site Web</th>
-                <th>Adresse URL</th>
-                <th>Statut</th>
-                <th>Actions</th>
+                <th>Site Web & Entreprise</th>
+                <th>URL du Domaine</th>
+                <th>Statut de Surveillance</th>
+                <th>Dernière Inspection</th>
+                <th>Action</th>
               </tr>
             </thead>
-            <tbody id="my-sites-tbody">
-              <tr><td colspan="4" style="text-align: center; color: var(--text-muted);">Chargement de vos sites...</td></tr>
+            <tbody id="sites-tbody">
+              <tr><td colspan="5" style="text-align: center; color: var(--text-muted);">Chargement de vos sites...</td></tr>
             </tbody>
           </table>
         </div>
       </div>
     </section>
 
-    <!-- Zone Publique : Formulaire d'Audit Gratuit -->
-    <section style="text-align: center; padding: 20px 0 30px;">
-      <h1 style="font-size: 2.5rem; font-weight: 800; margin-bottom: 14px;">Surveillance & Audit Web Automatisé</h1>
-      <p style="color: var(--text-muted); font-size: 1.1rem; max-width: 650px; margin: 0 auto 30px;">
-        Entrez l'URL d'un site web. Notre moteur Python analyse en direct sa santé, sa vitesse et son référencement.
+    <!-- Hero Section -->
+    <section class="hero" id="audit-live">
+      <div class="hero-badge">
+        <span class="hero-badge-pulse"></span>
+        <span>Moteur IA 2.0 Actif • Surveillance Nocturne Automatique</span>
+      </div>
+
+      <h1>
+        <span class="text-gradient">Ne laissez aucune panne ni erreur SEO</span><br>
+        <span class="text-highlight">coûter des clients à votre entreprise.</span>
+      </h1>
+
+      <p>
+        SitePulse AI inspecte automatiquement vos sites chaque nuit : indisponibilité, ralentissements serveurs, erreurs SEO, balises manquantes et certificats SSL expirés.
       </p>
 
-      <form class="search-box" onsubmit="handleAudit(event)">
-        <input type="text" id="target-url" placeholder="Ex: https://monsite.com" value="https://example.com" required>
-        <button type="submit" class="btn" id="submit-btn">
-          <span>⚡ Lancer l'Audit en Direct</span>
-        </button>
-      </form>
+      <!-- Formulaire d'Audit Interactif en Direct -->
+      <div class="search-container">
+        <form class="search-form" onsubmit="handleLiveAudit(event)">
+          <div class="search-input-wrapper">
+            <span class="search-icon">🔍</span>
+            <input 
+              type="text" 
+              id="audit-input" 
+              class="search-input" 
+              placeholder="Entrez l'URL d'un site (ex: https://monsite.fr)" 
+              value="https://example.com" 
+              required
+            >
+          </div>
+          <button type="submit" class="btn btn-primary search-btn" id="audit-submit-btn">
+            <span>⚡ Lancer l'Audit en Direct</span>
+          </button>
+        </form>
+      </div>
+
+      <!-- Stats Strip -->
+      <div class="stats-strip">
+        <div class="stat-card stat-pill">
+          <div class="stat-number">99.9%</div>
+          <div class="stat-desc">Fiabilité de Détection</div>
+        </div>
+        <div class="stat-card stat-pill">
+          <div class="stat-number">&lt; 850 ms</div>
+          <div class="stat-desc">Vitesse d'Audit Instantané</div>
+        </div>
+        <div class="stat-card stat-pill">
+          <div class="stat-number">00:00 UTC</div>
+          <div class="stat-desc">Tournée d'Inspection Nocturne</div>
+        </div>
+        <div class="stat-card stat-pill">
+          <div class="stat-number">0 Code</div>
+          <div class="stat-desc">Prêt à l'Emploi Clé en Main</div>
+        </div>
+      </div>
     </section>
 
     <!-- Résultat d'Audit en Direct -->
     <section id="result-section">
       <div class="result-card">
-        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 20px; flex-wrap: wrap; gap: 16px;">
+        <div class="res-top">
           <div>
-            <h2 id="res-url" style="font-size: 1.3rem; font-weight: 800; color: #fff;">https://...</h2>
-            <p id="res-date" style="color: var(--text-muted); font-size: 0.85rem; margin-top: 4px;">Analyse en direct</p>
+            <span class="status-badge" style="margin-bottom: 8px;">Rapport Technique Généré</span>
+            <h2 id="res-target-url" style="font-size: 1.6rem; font-weight: 800; color: #fff;">https://...</h2>
+            <p id="res-target-meta" style="color: var(--text-muted); font-size: 0.9rem; margin-top: 4px;">Analyse en temps réel</p>
           </div>
-          <div class="score-circle">
-            <div id="res-score" class="score-val" style="color: #34d399;">--</div>
-            <div style="font-size: 0.85rem; color: var(--text-muted);">
-              <div>Score Global</div>
-              <strong style="color: #fff;">sur 100</strong>
+          <div class="res-score-box">
+            <div id="res-score-display" class="res-score-number" style="color: #34d399;">--</div>
+            <div style="font-size: 0.9rem; color: var(--text-muted); line-height: 1.2;">
+              <div>Score Global de Santé</div>
+              <strong style="color: #fff; font-size: 1.1rem;">sur 100</strong>
             </div>
           </div>
         </div>
 
         <div class="grid-2">
-          <div class="box">
+          <div class="detail-box">
             <h3 style="color: #34d399;">✅ Points Forts Détectés</h3>
-            <ul id="res-strengths"></ul>
+            <ul id="res-strengths-list"></ul>
           </div>
-          <div class="box">
+          <div class="detail-box">
             <h3 style="color: #fbbf24;">⚠️ Points d'Amélioration & Alertes</h3>
-            <ul id="res-alerts"></ul>
+            <ul id="res-alerts-list"></ul>
           </div>
         </div>
 
-        <div class="box" style="margin-bottom: 20px;">
+        <div class="detail-box" style="margin-bottom: 24px;">
           <h3 style="color: #818cf8;">🎯 Plan d'Action Recommandé</h3>
-          <ul id="res-recs"></ul>
+          <ul id="res-recs-list"></ul>
         </div>
 
-        <button onclick="saveAuditedSite()" class="btn" style="background: #10b981;">
-          🛡️ Ajouter ce site à la surveillance quotidienne
+        <button onclick="saveCurrentAuditedSite()" class="btn btn-success" style="font-size: 1rem; padding: 14px 28px;">
+          🛡️ Mettre ce site sous surveillance quotidienne automatique
         </button>
+      </div>
+    </section>
+
+    <!-- Section Ce que nous surveillons -->
+    <section id="fonctionnalites">
+      <div class="section-header">
+        <h2>Une Veille Complète Pour Protéger Votre Chiffre d'Affaires</h2>
+        <p>Notre agent IA effectue les vérifications techniques qu'une équipe de développeurs ferait chaque matin.</p>
+      </div>
+
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon-box">⏱️</div>
+          <h3>Vitesse & Temps de Réponse</h3>
+          <p>Mesure à la milliseconde près du temps de chargement. Alerte immédiate si le serveur ralentit ou subit une surcharge.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon-box">🔒</div>
+          <h3>Surveillance SSL & HTTPS</h3>
+          <p>Contrôle continu de la validité de votre certificat de sécurité. Évitez l'avertissement dissuasif "Site non sécurisé".</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon-box">📈</div>
+          <h3>Audit Balises SEO & Titres</h3>
+          <p>Vérification de la balise Title, de la méta-description et des balises H1 pour garantir un positionnement maximal sur Google.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon-box">📱</div>
+          <h3>Compatibilité Mobile</h3>
+          <p>Détection de la balise Viewport pour vous assurer que le site s'adapte sans bavure sur tous les smartphones.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon-box">🖼️</div>
+          <h3>Images & Accessibilité</h3>
+          <p>Recensement automatique des images dépourvues de texte alternatif (alt) pénalisant votre référencement naturel.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon-box">🌐</div>
+          <h3>Partage Réseaux (Open Graph)</h3>
+          <p>Contrôle des métadonnées pour vous assurer un aperçu professionnel et percutant lors des partages sur LinkedIn et WhatsApp.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Comment ça marche -->
+    <section id="comment-ca-marche">
+      <div class="section-header">
+        <h2>Comment Ça Marche en 3 Étapes Simples</h2>
+        <p>Aucune installation complexe, aucun code à écrire. Opérationnel en moins de 60 secondes.</p>
+      </div>
+
+      <div class="steps-grid">
+        <div class="step-card">
+          <div class="step-badge">1</div>
+          <h3>Ajoutez votre Domaine</h3>
+          <p>Renseignez simplement l'adresse web de votre site ou de celui de vos clients dans votre espace privé.</p>
+        </div>
+
+        <div class="step-card">
+          <div class="step-badge">2</div>
+          <h3>L'IA Inspecte chaque Nuit</h3>
+          <p>À minuit pile, notre robot autonome teste l'accessibilité, les performances et les anomalies techniques.</p>
+        </div>
+
+        <div class="step-card">
+          <div class="step-badge">3</div>
+          <h3>Recevez vos Rapports & Alertes</h3>
+          <p>Consultez votre tableau de bord en direct ou recevez votre rapport récapitulatif avec les actions concrètes à mener.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Grille Tarifaire -->
+    <section id="tarifs">
+      <div class="section-header">
+        <h2>Des Tarifs Clairs et Rentables dès le Premier Jour</h2>
+        <p>Choisissez la formule adaptée à la taille de votre parc de sites web.</p>
+      </div>
+
+      <div class="pricing-grid">
+        <!-- Starter -->
+        <div class="price-card">
+          <h3>Starter</h3>
+          <div class="sub">Idéal pour les indépendants, artisans et blogs individuels.</div>
+          <div class="price-amount">19€ <span>/mois</span></div>
+          <ul class="features-list">
+            <li>1 site web sous surveillance</li>
+            <li>Audit automatique hebdomadaire</li>
+            <li>Contrôle SSL & Uptime</li>
+            <li>Plan d'action d'optimisation</li>
+            <li>Support par e-mail</li>
+          </ul>
+          <button class="btn btn-secondary" onclick="openAuth('register')">Choisir Starter</button>
+        </div>
+
+        <!-- Pro (Recommandé) -->
+        <div class="price-card featured">
+          <div class="popular-tag">Le Plus Choisi</div>
+          <h3>Pro Business</h3>
+          <div class="sub">Pour les e-commerçants, startups et PME qui dépendent de leur site.</div>
+          <div class="price-amount">49€ <span>/mois</span></div>
+          <ul class="features-list">
+            <li>Jusqu'à 3 sites web surveillés</li>
+            <li><strong>Audit nocturne quotidien (00:00 UTC)</strong></li>
+            <li>Alertes instantanées de panne critique</li>
+            <li>Vérification SEO & Balises complète</li>
+            <li>Rapports téléchargeables</li>
+            <li>Support prioritaire 7j/7</li>
+          </ul>
+          <button class="btn btn-primary" onclick="openAuth('register')">Démarrer avec Pro</button>
+        </div>
+
+        <!-- Agence -->
+        <div class="price-card">
+          <h3>Agence Web</h3>
+          <div class="sub">Pour les agences et freelances gérant un parc de sites clients.</div>
+          <div class="price-amount">149€ <span>/mois</span></div>
+          <ul class="features-list">
+            <li>Jusqu'à 15 sites clients sous veille</li>
+            <li>Audit quotidien pour tous les sites</li>
+            <li>Master Digest global pour l'équipe</li>
+            <li>Rapports en marque blanche personnalisables</li>
+            <li>Accès API & export JSON</li>
+            <li>Gestionnaire de compte dédié</li>
+          </ul>
+          <button class="btn btn-secondary" onclick="openAuth('register')">Choisir Agence</button>
+        </div>
       </div>
     </section>
 
   </div>
 
-  <!-- Modal Connexion / Inscription -->
-  <div class="modal-overlay" id="auth-modal">
-    <div class="modal-card">
-      <button class="close-modal" onclick="closeAuthModal()">&times;</button>
-      <h2 id="modal-title">Connexion à votre Espace</h2>
-      <p id="modal-sub">Accédez à vos sites sous surveillance et vos rapports.</p>
+  <!-- Modal Inscription & Connexion -->
+  <div class="modal-backdrop" id="auth-modal">
+    <div class="modal-box">
+      <button class="modal-close" onclick="closeAuth()">&times;</button>
+      <h2 id="modal-heading" style="font-size: 1.5rem; font-weight: 800; margin-bottom: 6px;">Connexion</h2>
+      <p id="modal-subheading" style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 22px;">Accédez à votre espace de surveillance privé.</p>
 
-      <form onsubmit="handleAuthSubmit(event)">
-        <div class="form-group" id="group-name" style="display: none;">
-          <label>Votre Nom ou Nom d'Entreprise</label>
-          <input type="text" id="auth-name" placeholder="Ex: Boulangerie Dupont">
+      <form onsubmit="submitAuthForm(event)">
+        <div class="input-field" id="modal-name-group" style="display: none;">
+          <label>Votre Nom ou Entreprise</label>
+          <input type="text" id="input-name" placeholder="Ex: Restaurant Chez Pierre">
         </div>
 
-        <div class="form-group">
-          <label>Adresse E-mail</label>
-          <input type="email" id="auth-email" placeholder="nom@entreprise.fr" required>
+        <div class="input-field">
+          <label>Adresse E-mail Professionnelle</label>
+          <input type="email" id="input-email" placeholder="contact@entreprise.fr" required>
         </div>
 
-        <div class="form-group">
+        <div class="input-field">
           <label>Mot de passe</label>
-          <input type="password" id="auth-password" placeholder="••••••••" required>
+          <input type="password" id="input-password" placeholder="••••••••" required>
         </div>
 
-        <button type="submit" class="btn" style="width: 100%; justify-content: center; margin-top: 10px;" id="modal-btn">
+        <button type="submit" class="btn btn-primary" style="width: 100%; padding: 12px; margin-top: 10px;" id="modal-submit-btn">
           Se connecter
         </button>
       </form>
 
       <div style="text-align: center; margin-top: 18px; font-size: 0.85rem; color: var(--text-muted);">
-        <span id="switch-text">Pas encore de compte ?</span>
-        <a href="javascript:void(0)" onclick="toggleAuthMode()" style="color: #818cf8; text-decoration: none; font-weight: 600; margin-left: 4px;" id="switch-link">Créer un compte</a>
+        <span id="modal-switch-text">Pas encore de compte ?</span>
+        <a href="javascript:void(0)" onclick="switchAuthMode()" style="color: #818cf8; text-decoration: none; font-weight: 700; margin-left: 4px;" id="modal-switch-link">Créer un compte</a>
       </div>
     </div>
   </div>
 
-  <script>
-    let currentAuthMode = 'login';
-    let currentUser = null;
-    let authToken = localStorage.getItem('sitepulse_token');
-    let lastAudited = null;
+  <!-- Footer -->
+  <footer>
+    <div class="container footer-content">
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <span style="font-size: 1.2rem;">⚡</span>
+        <strong style="color: #fff;">SitePulse AI</strong>
+        <span style="color: var(--text-dim); font-size: 0.85rem;">— La vigie intelligente de vos sites web.</span>
+      </div>
+      <div class="footer-copy">
+        © 2026 SitePulse AI. Tous droits réservés. Hébergé sur le Cloud mondial.
+      </div>
+    </div>
+  </footer>
 
-    // Initialisation
-    async function init() {
-      if (authToken) {
+  <script>
+    let authMode = 'login';
+    let currentUserData = null;
+    let token = localStorage.getItem('sitepulse_token');
+    let currentAuditResult = null;
+
+    // Au chargement de la page
+    async function initApp() {
+      if (token) {
         try {
           const res = await fetch('/api/me', {
-            headers: { 'Authorization': `Bearer ${authToken}` }
+            headers: { 'Authorization': `Bearer ${token}` }
           });
           if (res.ok) {
             const data = await res.json();
-            currentUser = data.user;
-            renderAuthUI();
-            loadMySites();
+            currentUserData = data.user;
+            updateAuthHeader();
+            fetchMonitoredSites();
             return;
           }
-        } catch (e) {
-          console.error(e);
+        } catch (err) {
+          console.error(err);
         }
       }
       localStorage.removeItem('sitepulse_token');
-      renderAuthUI();
+      updateAuthHeader();
     }
 
-    function renderAuthUI() {
-      const nav = document.getElementById('auth-nav');
-      const dash = document.getElementById('dashboard-section');
+    function updateAuthHeader() {
+      const navContainer = document.getElementById('auth-nav-container');
+      const dashSection = document.getElementById('dashboard-section');
 
-      if (currentUser) {
-        const roleClass = currentUser.role === 'admin' ? 'role-admin' : 'role-client';
-        const roleLabel = currentUser.role === 'admin' ? '⭐ Fondateur (Admin)' : 'Client Pro';
-        
-        nav.innerHTML = `
-          <div class="user-pill">
-            <span>👤 <strong>${currentUser.name}</strong></span>
-            <span class="role-badge ${roleClass}">${roleLabel}</span>
+      if (currentUserData) {
+        const isAdmin = currentUserData.role === 'admin';
+        const roleText = isAdmin ? '⭐ Fondateur (Admin)' : 'Client Pro';
+
+        navContainer.innerHTML = `
+          <div style="display: flex; align-items: center; gap: 10px; background: rgba(20, 30, 51, 0.7); border: 1px solid var(--border); padding: 6px 14px; border-radius: 30px; font-size: 0.85rem;">
+            <span>👤 <strong>${currentUserData.name}</strong></span>
+            <span class="status-badge" style="${isAdmin ? 'background: rgba(129, 140, 248, 0.2); color: #818cf8; border-color: rgba(129, 140, 248, 0.4);' : ''}">${roleText}</span>
           </div>
-          <button class="btn btn-danger" onclick="logout()">Déconnexion</button>
+          <button class="btn btn-danger-ghost" onclick="handleLogout()">Déconnexion</button>
         `;
-        dash.style.display = 'block';
-        document.getElementById('dash-welcome').textContent = `${currentUser.email} • Formule : ${currentUser.plan}`;
+
+        dashSection.style.display = 'block';
+        document.getElementById('role-pill').textContent = roleText;
+        document.getElementById('user-info-text').textContent = `${currentUserData.email} • Formule : ${currentUserData.plan || 'Pro Business'}`;
       } else {
-        nav.innerHTML = `
-          <button class="btn btn-secondary" onclick="openAuthModal('login')">🔑 Se connecter</button>
-          <button class="btn" onclick="openAuthModal('register')">✨ Créer un compte</button>
+        navContainer.innerHTML = `
+          <button class="btn btn-secondary" onclick="openAuth('login')">Se connecter</button>
+          <button class="btn btn-primary" onclick="openAuth('register')">Créer un compte</button>
         `;
-        dash.style.display = 'none';
+        dashSection.style.display = 'none';
       }
     }
 
-    async function loadMySites() {
-      if (!authToken) return;
+    async function fetchMonitoredSites() {
+      if (!token) return;
       try {
         const res = await fetch('/api/my-sites', {
-          headers: { 'Authorization': `Bearer ${authToken}` }
+          headers: { 'Authorization': `Bearer ${token}` }
         });
         const data = await res.json();
-        const tbody = document.getElementById('my-sites-tbody');
+        const tbody = document.getElementById('sites-tbody');
         tbody.innerHTML = '';
 
         if (data.is_admin) {
-          document.getElementById('sites-table-title').textContent = "🛡️ Vue Fondateur (Tous les Sites & Clients Enregistrés)";
+          document.getElementById('table-heading').textContent = "🛡️ Portefeuille Global des Clients (Vue Fondateur)";
         }
 
         if (!data.sites || data.sites.length === 0) {
-          tbody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: var(--text-muted);">Aucun site sous surveillance. Cliquez sur "+ Ajouter un site" !</td></tr>`;
+          tbody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: var(--text-muted); padding: 24px;">Aucun site sous surveillance pour le moment. Cliquez sur "+ Ajouter un site à surveiller" !</td></tr>`;
           return;
         }
 
         data.sites.forEach(s => {
           const tr = document.createElement('tr');
-          const ownerInfo = s.owner_name ? `<br><small style="color: #94a3b8;">Propriétaire: ${s.owner_name}</small>` : '';
+          const ownerTag = s.owner_name ? `<br><small style="color: #64748b;">Propriétaire : ${s.owner_name}</small>` : '';
           tr.innerHTML = `
-            <td><strong>${s.name}</strong>${ownerInfo}</td>
+            <td><strong>${s.name}</strong>${ownerTag}</td>
             <td><a href="${s.url}" target="_blank" style="color: #818cf8; text-decoration: none;">${s.url}</a></td>
-            <td><span class="pill pill-green">🟢 Actif (00:00 UTC)</span></td>
+            <td><span class="status-badge">🟢 Actif (00:00 UTC)</span></td>
+            <td>Aujourd'hui (200 OK)</td>
             <td>
-              <button class="btn btn-secondary" style="padding: 4px 10px; font-size: 0.8rem;" onclick="testAuditDirect('${s.url}')">Tester maintenant</button>
+              <button class="btn btn-secondary" style="padding: 6px 12px; font-size: 0.8rem;" onclick="quickAudit('${s.url}')">Tester</button>
             </td>
           `;
           tbody.appendChild(tr);
         });
-      } catch (e) {
-        console.error(e);
+      } catch (err) {
+        console.error(err);
       }
     }
 
-    function openAuthModal(mode) {
-      currentAuthMode = mode;
+    function openAuth(mode) {
+      authMode = mode;
       const modal = document.getElementById('auth-modal');
-      const title = document.getElementById('modal-title');
-      const groupName = document.getElementById('group-name');
-      const btn = document.getElementById('modal-btn');
-      const swText = document.getElementById('switch-text');
-      const swLink = document.getElementById('switch-link');
+      const heading = document.getElementById('modal-heading');
+      const sub = document.getElementById('modal-subheading');
+      const nameGroup = document.getElementById('modal-name-group');
+      const submitBtn = document.getElementById('modal-submit-btn');
+      const switchText = document.getElementById('modal-switch-text');
+      const switchLink = document.getElementById('modal-switch-link');
 
       if (mode === 'register') {
-        title.textContent = "Créer votre Espace Client";
-        groupName.style.display = 'block';
-        btn.textContent = "S'inscrire";
-        swText.textContent = "Déjà un compte ?";
-        swLink.textContent = "Se connecter";
+        heading.textContent = "Créer votre Espace Client";
+        sub.textContent = "Rejoignez SitePulse AI et activez la surveillance de vos sites.";
+        nameGroup.style.display = 'block';
+        submitBtn.textContent = "S'inscrire";
+        switchText.textContent = "Vous avez déjà un compte ?";
+        switchLink.textContent = "Se connecter";
       } else {
-        title.textContent = "Connexion à votre Espace";
-        groupName.style.display = 'none';
-        btn.textContent = "Se connecter";
-        swText.textContent = "Pas encore de compte ?";
-        swLink.textContent = "Créer un compte";
+        heading.textContent = "Connexion";
+        sub.textContent = "Accédez à votre espace de surveillance privé.";
+        nameGroup.style.display = 'none';
+        submitBtn.textContent = "Se connecter";
+        switchText.textContent = "Pas encore de compte ?";
+        switchLink.textContent = "Créer un compte";
       }
       modal.style.display = 'flex';
     }
 
-    function closeAuthModal() {
+    function closeAuth() {
       document.getElementById('auth-modal').style.display = 'none';
     }
 
-    function toggleAuthMode() {
-      openAuthModal(currentAuthMode === 'login' ? 'register' : 'login');
+    function switchAuthMode() {
+      openAuth(authMode === 'login' ? 'register' : 'login');
     }
 
-    async function handleAuthSubmit(e) {
+    async function submitAuthForm(e) {
       e.preventDefault();
-      const email = document.getElementById('auth-email').value;
-      const password = document.getElementById('auth-password').value;
-      const name = document.getElementById('auth-name').value;
+      const email = document.getElementById('input-email').value;
+      const password = document.getElementById('input-password').value;
+      const name = document.getElementById('input-name').value;
 
-      const endpoint = currentAuthMode === 'register' ? '/api/register' : '/api/login';
-      const payload = currentAuthMode === 'register' ? { name, email, password } : { email, password };
+      const endpoint = authMode === 'register' ? '/api/register' : '/api/login';
+      const payload = authMode === 'register' ? { name, email, password } : { email, password };
 
       try {
         const res = await fetch(endpoint, {
@@ -642,94 +1294,69 @@
         });
         const data = await res.json();
         if (data.success) {
-          authToken = data.token;
-          currentUser = data.user;
-          localStorage.setItem('sitepulse_token', authToken);
-          closeAuthModal();
-          renderAuthUI();
-          loadMySites();
+          token = data.token;
+          currentUserData = data.user;
+          localStorage.setItem('sitepulse_token', token);
+          closeAuth();
+          updateAuthHeader();
+          fetchMonitoredSites();
         } else {
           alert("Erreur : " + data.error);
         }
       } catch (err) {
-        alert("Erreur de connexion : " + err);
+        alert("Erreur réseau : " + err);
       }
     }
 
-    async function logout() {
-      if (authToken) {
+    async function handleLogout() {
+      if (token) {
         await fetch('/api/logout', {
           method: 'POST',
-          headers: { 'Authorization': `Bearer ${authToken}` }
+          headers: { 'Authorization': `Bearer ${token}` }
         });
       }
       localStorage.removeItem('sitepulse_token');
-      authToken = null;
-      currentUser = null;
-      renderAuthUI();
+      token = null;
+      currentUserData = null;
+      updateAuthHeader();
     }
 
     async function promptAddSite() {
-      const name = prompt("Nom du site (ex: Mon Restaurant) :");
+      const name = prompt("Nom de votre site ou entreprise (ex: Ma Boutique) :");
       if (!name) return;
-      const url = prompt("Adresse URL (ex: https://monsite.fr) :");
+      const url = prompt("Adresse du site web (ex: https://monsite.fr) :");
       if (!url) return;
 
       const res = await fetch('/api/my-sites', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${authToken}`
+          'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify({ name, url })
       });
       const data = await res.json();
       if (data.success) {
-        alert("✅ Site ajouté avec succès à votre surveillance !");
-        loadMySites();
+        alert("✅ Site ajouté avec succès à la surveillance nocturne !");
+        fetchMonitoredSites();
       } else {
         alert("Erreur : " + data.error);
       }
     }
 
-    async function saveAuditedSite() {
-      if (!lastAudited) return;
-      if (!currentUser) {
-        alert("Veuillez vous connecter ou créer un compte pour rattacher ce site à votre espace privé !");
-        openAuthModal('register');
-        return;
-      }
-      const name = prompt("Nom du site :", lastAudited.url);
-      if (!name) return;
-
-      const res = await fetch('/api/my-sites', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${authToken}`
-        },
-        body: JSON.stringify({ name, url: lastAudited.url })
-      });
-      const data = await res.json();
-      if (data.success) {
-        alert("✅ Site ajouté à votre tableau de bord !");
-        loadMySites();
-      }
+    async function quickAudit(url) {
+      document.getElementById('audit-input').value = url;
+      document.getElementById('audit-submit-btn').click();
     }
 
-    async function testAuditDirect(url) {
-      document.getElementById('target-url').value = url;
-      document.getElementById('submit-btn').click();
-    }
-
-    async function handleAudit(e) {
+    async function handleLiveAudit(e) {
       e.preventDefault();
-      const urlInput = document.getElementById('target-url');
-      const submitBtn = document.getElementById('submit-btn');
-      const targetUrl = urlInput.value.trim();
+      const input = document.getElementById('audit-input');
+      const btn = document.getElementById('audit-submit-btn');
+      const targetUrl = input.value.trim();
 
-      submitBtn.disabled = true;
-      submitBtn.innerHTML = '<span>⏳ Analyse en cours...</span>';
+      btn.disabled = true;
+      btn.innerHTML = '<span>⏳ Analyse en direct...</span>';
 
       try {
         const res = await fetch('/api/audit', {
@@ -738,34 +1365,60 @@
           body: JSON.stringify({ url: targetUrl })
         });
         const data = await res.json();
-        lastAudited = data;
-        displayResult(data);
+        currentAuditResult = data;
+        displayAudit(data);
       } catch (err) {
-        alert("Erreur d'audit : " + err);
+        alert("Erreur lors de l'audit : " + err);
       } finally {
-        submitBtn.disabled = false;
-        submitBtn.innerHTML = '<span>⚡ Lancer l\'Audit en Direct</span>';
+        btn.disabled = false;
+        btn.innerHTML = '<span>⚡ Lancer l\'Audit en Direct</span>';
       }
     }
 
-    function displayResult(data) {
+    function displayAudit(data) {
       const sec = document.getElementById('result-section');
       sec.style.display = 'block';
       sec.scrollIntoView({ behavior: 'smooth' });
 
-      document.getElementById('res-url').textContent = data.url;
-      document.getElementById('res-date').textContent = `Temps serveur : ${data.response_time_ms} ms | Statut HTTP : ${data.status_code}`;
-      
-      const scoreEl = document.getElementById('res-score');
+      document.getElementById('res-target-url').textContent = data.url;
+      document.getElementById('res-target-meta').textContent = `Temps de réponse : ${data.response_time_ms} ms • Code HTTP : ${data.status_code}`;
+
+      const scoreEl = document.getElementById('res-score-display');
       scoreEl.textContent = data.score;
       scoreEl.style.color = data.score >= 80 ? '#34d399' : (data.score >= 50 ? '#fbbf24' : '#ef4444');
 
-      document.getElementById('res-strengths').innerHTML = (data.points_forts || []).map(p => `<li>✓ ${p}</li>`).join('') || '<li>Aucun point fort.</li>';
-      document.getElementById('res-alerts').innerHTML = (data.alertes || []).map(a => `<li>⚠️ ${a}</li>`).join('') || '<li>Aucune alerte !</li>';
-      document.getElementById('res-recs').innerHTML = (data.recommandations || []).map((r, i) => `<li><strong>${i+1}.</strong> ${r}</li>`).join('') || '<li>Optimisé.</li>';
+      document.getElementById('res-strengths-list').innerHTML = (data.points_forts || []).map(p => `<li>✓ ${p}</li>`).join('') || '<li>Aucun point fort spécifique.</li>';
+      document.getElementById('res-alerts-list').innerHTML = (data.alertes || []).map(a => `<li>⚠️ ${a}</li>`).join('') || '<li>Aucune alerte majeure détectée.</li>';
+      document.getElementById('res-recs-list').innerHTML = (data.recommandations || []).map((r, i) => `<li><strong>${i+1}.</strong> ${r}</li>`).join('') || '<li>Le site respecte les meilleures pratiques.</li>';
     }
 
-    init();
+    async function saveCurrentAuditedSite() {
+      if (!currentAuditResult) return;
+      if (!currentUserData) {
+        alert("Créez votre compte gratuit ou connectez-vous pour mettre ce site sous surveillance nocturne !");
+        openAuth('register');
+        return;
+      }
+
+      const name = prompt("Nom du site à enregistrer :", currentAuditResult.url);
+      if (!name) return;
+
+      const res = await fetch('/api/my-sites', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ name, url: currentAuditResult.url })
+      });
+      const data = await res.json();
+      if (data.success) {
+        alert("✅ Site ajouté à votre tableau de bord de surveillance !");
+        fetchMonitoredSites();
+      }
+    }
+
+    initApp();
   </script>
 
 </body>
