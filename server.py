@@ -1,7 +1,7 @@
 """
-Serveur Web & API Backend pour SitePulse AI SaaS.
-100% Python Standard Library (aucune installation requise).
-Fournit l'API d'audit en temps réel et sert l'interface utilisateur.
+Serveur Web & API Backend pour SitePulse AI SaaS — Version 2 (Espace Membre & Multi-Comptes).
+100% Python Standard Library.
+Gère l'authentification (sessions sécurisées), l'espace client privé et les audits en direct.
 """
 
 import os
@@ -10,6 +10,7 @@ import json
 import urllib.parse
 from http.server import HTTPServer, SimpleHTTPRequestHandler
 from audit_engine import run_audit
+import db
 
 if sys.platform == "win32":
     try:
@@ -18,104 +19,143 @@ if sys.platform == "win32":
         pass
 
 PORT = int(os.environ.get("PORT", 8080))
-CLIENTS_FILE = "clients.json"
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 class SaaSHandler(SimpleHTTPRequestHandler):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, directory=BASE_DIR, **kwargs)
 
+    def _send_json(self, data, status=200):
+        self.send_response(status)
+        self.send_header("Content-Type", "application/json; charset=utf-8")
+        self.send_header("Access-Control-Allow-Origin", "*")
+        self.send_header("Access-Control-Allow-Headers", "Content-Type, Authorization")
+        self.end_headers()
+        self.wfile.write(json.dumps(data, ensure_ascii=False).encode("utf-8"))
+
+    def _get_auth_user(self):
+        auth_header = self.headers.get("Authorization", "")
+        if auth_header.startswith("Bearer "):
+            token = auth_header[7:].strip()
+            return db.get_user_from_token(token), token
+        return None, None
+
+    def _read_json_body(self):
+        length = int(self.headers.get("Content-Length", 0))
+        if length <= 0:
+            return {}
+        try:
+            return json.loads(self.rfile.read(length).decode("utf-8"))
+        except Exception:
+            return {}
+
+    def do_OPTIONS(self):
+        self.send_response(200)
+        self.send_header("Access-Control-Allow-Origin", "*")
+        self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+        self.send_header("Access-Control-Allow-Headers", "Content-Type, Authorization")
+        self.end_headers()
+
     def do_GET(self):
         parsed = urllib.parse.urlparse(self.path)
-        if parsed.path == "/" or parsed.path == "/index.html":
+        path = parsed.path
+
+        if path == "/" or path == "/index.html":
             return super().do_GET()
-        elif parsed.path == "/api/clients":
-            self.send_response(200)
-            self.send_header("Content-Type", "application/json; charset=utf-8")
-            self.send_header("Access-Control-Allow-Origin", "*")
-            self.end_headers()
             
-            clients_data = {"clients": []}
-            if os.path.exists(CLIENTS_FILE):
-                try:
-                    with open(CLIENTS_FILE, "r", encoding="utf-8") as f:
-                        clients_data = json.load(f)
-                except Exception:
-                    pass
-            self.wfile.write(json.dumps(clients_data, ensure_ascii=False).encode("utf-8"))
+        elif path == "/api/me":
+            user, _ = self._get_auth_user()
+            if not user:
+                return self._send_json({"authenticated": False}, 401)
+            return self._send_json({"authenticated": True, "user": user})
+
+        elif path == "/api/my-sites":
+            user, _ = self._get_auth_user()
+            if not user:
+                return self._send_json({"error": "Non authentifié"}, 401)
+            is_admin = (user["role"] == "admin")
+            sites = db.get_user_sites(user["id"], is_admin=is_admin)
+            return self._send_json({"sites": sites, "is_admin": is_admin})
+
+        elif path == "/api/clients":
+            # Compatibilité V1
+            user, _ = self._get_auth_user()
+            is_admin = user and user["role"] == "admin"
+            uid = user["id"] if user else 1
+            sites = db.get_user_sites(uid, is_admin=True)
+            return self._send_json({"clients": sites})
+
         else:
             return super().do_GET()
 
     def do_POST(self):
         parsed = urllib.parse.urlparse(self.path)
-        
-        if parsed.path == "/api/audit":
-            # API d'audit en temps réel
-            content_length = int(self.headers.get("Content-Length", 0))
-            post_data = self.rfile.read(content_length).decode("utf-8")
-            
-            try:
-                payload = json.loads(post_data)
-                url = payload.get("url", "").strip()
-            except Exception:
-                url = ""
+        path = parsed.path
+        body = self._read_json_body()
 
+        # Inscription
+        if path == "/api/register":
+            name = body.get("name", "").strip()
+            email = body.get("email", "").strip()
+            password = body.get("password", "").strip()
+
+            if not name or not email or not password:
+                return self._send_json({"success": False, "error": "Tous les champs sont requis."}, 400)
+
+            auth_res, err = db.register_user(name, email, password)
+            if err:
+                return self._send_json({"success": False, "error": err}, 400)
+            return self._send_json({"success": True, **auth_res})
+
+        # Connexion
+        elif path == "/api/login":
+            email = body.get("email", "").strip()
+            password = body.get("password", "").strip()
+
+            auth_res, err = db.login_user(email, password)
+            if err:
+                return self._send_json({"success": False, "error": err}, 401)
+            return self._send_json({"success": True, **auth_res})
+
+        # Déconnexion
+        elif path == "/api/logout":
+            _, token = self._get_auth_user()
+            if token:
+                db.logout_user(token)
+            return self._send_json({"success": True})
+
+        # Audit en direct
+        elif path == "/api/audit":
+            url = body.get("url", "").strip()
             if not url:
-                self.send_response(400)
-                self.send_header("Content-Type", "application/json; charset=utf-8")
-                self.end_headers()
-                self.wfile.write(json.dumps({"success": False, "error": "URL manquante"}).encode("utf-8"))
-                return
-
-            print(f"[API BACKEND] Requête d'audit reçue pour : {url}")
+                return self._send_json({"success": False, "error": "URL manquante"}, 400)
             audit_result = run_audit(url)
-            
-            self.send_response(200)
-            self.send_header("Content-Type", "application/json; charset=utf-8")
-            self.send_header("Access-Control-Allow-Origin", "*")
-            self.end_headers()
-            self.wfile.write(json.dumps(audit_result, ensure_ascii=False).encode("utf-8"))
-            
-        elif parsed.path == "/api/clients":
-            # Ajout d'un nouveau client sous surveillance
-            content_length = int(self.headers.get("Content-Length", 0))
-            post_data = self.rfile.read(content_length).decode("utf-8")
-            
-            try:
-                new_client = json.loads(post_data)
-            except Exception:
-                new_client = {}
+            return self._send_json(audit_result)
+
+        # Ajouter un site à son compte
+        elif path == "/api/my-sites":
+            user, _ = self._get_auth_user()
+            if not user:
+                return self._send_json({"error": "Connexion requise pour sauvegarder un site"}, 401)
                 
-            clients_data = {"settings": {}, "clients": []}
-            if os.path.exists(CLIENTS_FILE):
-                try:
-                    with open(CLIENTS_FILE, "r", encoding="utf-8") as f:
-                        clients_data = json.load(f)
-                except Exception:
-                    pass
-                    
-            if new_client.get("url"):
-                new_client["id"] = f"client_{len(clients_data.get('clients', [])) + 1:02d}"
-                new_client["active"] = True
-                clients_data.setdefault("clients", []).append(new_client)
+            site_name = body.get("name", "Mon Site").strip()
+            site_url = body.get("url", "").strip()
+            if not site_url:
+                return self._send_json({"error": "URL requise"}, 400)
                 
-                with open(CLIENTS_FILE, "w", encoding="utf-8") as f:
-                    json.dump(clients_data, f, ensure_ascii=False, indent=2)
-                    
-            self.send_response(200)
-            self.send_header("Content-Type", "application/json; charset=utf-8")
-            self.end_headers()
-            self.wfile.write(json.dumps({"success": True, "clients": clients_data.get("clients", [])}, ensure_ascii=False).encode("utf-8"))
+            site_id = db.add_user_site(user["id"], site_name, site_url)
+            return self._send_json({"success": True, "site_id": site_id})
+
         else:
-            self.send_response(404)
-            self.end_headers()
+            return self._send_json({"error": "Route introuvable"}, 404)
 
 def run_server():
     server_address = ("", PORT)
     httpd = HTTPServer(server_address, SaaSHandler)
     print(f"======================================================")
-    print(f"🚀 BACKEND & FRONTEND DÉMARRÉS AVEC SUCCÈS")
+    print(f"🚀 VERSION 2 DÉMARRÉE (Auth + Espace Membre + SQLite)")
     print(f"🌐 Accédez à votre SaaS sur : http://localhost:{PORT}")
+    print(f"🔑 Compte Fondateur (Admin) : admin@sitepulse.ai / admin123")
     print(f"======================================================")
     httpd.serve_forever()
 

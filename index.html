@@ -3,7 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SitePulse AI — Surveillance & Audit Web Quotidien</title>
+  <meta name="theme-color" content="#4f46e5">
+  <link rel="manifest" href="/manifest.json">
+  <title>SitePulse AI — Surveillance Web & Espace Client</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -36,13 +38,13 @@
     }
 
     header {
-      background: rgba(11, 15, 25, 0.9);
+      background: rgba(11, 15, 25, 0.95);
       backdrop-filter: blur(12px);
       border-bottom: 1px solid var(--border);
       position: sticky;
       top: 0;
       z-index: 100;
-      padding: 16px 24px;
+      padding: 14px 24px;
     }
 
     .nav-container {
@@ -51,6 +53,7 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
+      gap: 16px;
     }
 
     .logo {
@@ -60,6 +63,7 @@
       font-weight: 800;
       font-size: 1.3rem;
       color: #fff;
+      text-decoration: none;
     }
 
     .logo-badge {
@@ -71,67 +75,112 @@
       font-weight: 700;
     }
 
-    .badge-status {
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .btn {
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 10px 18px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.2s;
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      background: rgba(16, 185, 129, 0.15);
-      color: var(--success);
-      border: 1px solid rgba(16, 185, 129, 0.3);
-      padding: 6px 14px;
-      border-radius: 999px;
-      font-size: 0.85rem;
-      font-weight: 600;
+      text-decoration: none;
     }
 
-    .badge-status::before {
-      content: '';
-      width: 8px;
-      height: 8px;
-      background: var(--success);
-      border-radius: 50%;
-      box-shadow: 0 0 8px var(--success);
+    .btn:hover {
+      background: var(--primary-hover);
+      transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: #fff;
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .btn-danger {
+      background: rgba(239, 68, 68, 0.15);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      color: #f87171;
+    }
+
+    .btn-danger:hover {
+      background: rgba(239, 68, 68, 0.25);
     }
 
     .container {
       max-width: 1100px;
       margin: 0 auto;
-      padding: 40px 20px;
+      padding: 30px 20px;
     }
 
-    .hero {
-      text-align: center;
-      padding: 20px 0 40px;
+    /* Auth Box Banner */
+    .user-pill {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      padding: 6px 14px;
+      border-radius: 30px;
+      font-size: 0.85rem;
     }
 
-    .hero h1 {
-      font-size: 2.8rem;
-      font-weight: 800;
-      letter-spacing: -0.02em;
-      margin-bottom: 16px;
-      background: linear-gradient(135deg, #ffffff 0%, #cbd5e1 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+    .role-badge {
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 0.75rem;
+      font-weight: 700;
+    }
+    .role-admin { background: #818cf8; color: #0b0f19; }
+    .role-client { background: #34d399; color: #0b0f19; }
+
+    /* Dashboard Section (Logged In) */
+    #dashboard-section {
+      display: none;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 28px;
+      margin-bottom: 40px;
+      box-shadow: 0 20px 40px -15px rgba(0,0,0,0.5);
     }
 
-    .hero p {
-      color: var(--text-muted);
-      font-size: 1.15rem;
-      max-width: 680px;
-      margin: 0 auto 32px;
+    .dash-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 20px;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+      gap: 16px;
     }
 
-    /* Live Audit Form */
+    /* Search Box */
     .search-box {
       background: var(--card-bg);
       border: 2px solid var(--border);
       border-radius: 16px;
-      padding: 12px;
+      padding: 10px;
       max-width: 760px;
-      margin: 0 auto 50px;
+      margin: 0 auto 40px;
       display: flex;
-      gap: 12px;
-      box-shadow: 0 20px 40px -15px rgba(0,0,0,0.5);
+      gap: 10px;
     }
 
     .search-box input {
@@ -140,64 +189,21 @@
       border: none;
       outline: none;
       color: #fff;
-      font-size: 1.1rem;
-      padding: 12px 16px;
+      font-size: 1.05rem;
+      padding: 10px 14px;
     }
 
-    .search-box input::placeholder {
-      color: #64748b;
-    }
-
-    .btn {
-      background: var(--primary);
-      color: white;
-      border: none;
-      padding: 14px 28px;
-      font-size: 1rem;
-      font-weight: 700;
-      border-radius: 12px;
-      cursor: pointer;
-      transition: all 0.2s;
-      white-space: nowrap;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .btn:hover {
-      background: var(--primary-hover);
-      transform: translateY(-1px);
-    }
-
-    /* Audit Result Card */
+    /* Results */
     #result-section {
       display: none;
-      margin-bottom: 50px;
-      animation: fadeIn 0.4s ease;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
+      margin-bottom: 40px;
     }
 
     .result-card {
       background: var(--card-bg);
       border: 1px solid var(--border);
       border-radius: 20px;
-      padding: 32px;
-      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-    }
-
-    .result-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-bottom: 1px solid var(--border);
-      padding-bottom: 24px;
-      margin-bottom: 24px;
-      flex-wrap: wrap;
-      gap: 16px;
+      padding: 30px;
     }
 
     .score-circle {
@@ -215,8 +221,8 @@
     .grid-2 {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 24px;
-      margin-bottom: 24px;
+      gap: 20px;
+      margin: 20px 0;
     }
 
     @media (max-width: 768px) {
@@ -227,17 +233,14 @@
     .box {
       background: rgba(11, 15, 25, 0.6);
       border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 20px;
+      border-radius: 12px;
+      padding: 18px;
     }
 
     .box h3 {
-      font-size: 1.05rem;
+      font-size: 1rem;
       font-weight: 700;
-      margin-bottom: 14px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
+      margin-bottom: 12px;
     }
 
     .box ul {
@@ -245,29 +248,21 @@
     }
 
     .box ul li {
-      margin-bottom: 10px;
-      font-size: 0.95rem;
+      margin-bottom: 8px;
+      font-size: 0.9rem;
       color: #cbd5e1;
     }
 
     /* Table */
-    .table-card {
-      background: var(--card-bg);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 24px;
-      margin-bottom: 50px;
-    }
-
     table {
       width: 100%;
       border-collapse: collapse;
-      margin-top: 16px;
+      margin-top: 14px;
     }
 
     th {
       color: var(--text-muted);
-      font-size: 0.8rem;
+      font-size: 0.75rem;
       text-transform: uppercase;
       padding: 12px;
       text-align: left;
@@ -277,59 +272,170 @@
     td {
       padding: 14px 12px;
       border-bottom: 1px solid rgba(35, 47, 72, 0.6);
-      font-size: 0.95rem;
+      font-size: 0.9rem;
     }
 
-    .badge-pill {
+    .pill {
       display: inline-block;
       padding: 4px 10px;
       border-radius: 6px;
       font-weight: 700;
-      font-size: 0.85rem;
+      font-size: 0.8rem;
+    }
+    .pill-green { background: rgba(16, 185, 129, 0.15); color: #34d399; }
+
+    /* Modal Auth */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(6px);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
     }
 
-    .pill-green { background: rgba(16, 185, 129, 0.15); color: #34d399; }
-    .pill-orange { background: rgba(245, 158, 11, 0.15); color: #fbbf24; }
+    .modal-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 32px;
+      width: 100%;
+      max-width: 440px;
+      position: relative;
+    }
+
+    .modal-card h2 {
+      font-size: 1.5rem;
+      font-weight: 800;
+      margin-bottom: 8px;
+    }
+
+    .modal-card p {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      margin-bottom: 24px;
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 6px;
+      color: #cbd5e1;
+    }
+
+    .form-group input {
+      width: 100%;
+      background: rgba(11, 15, 25, 0.8);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px 14px;
+      color: #fff;
+      font-size: 0.95rem;
+      outline: none;
+    }
+
+    .form-group input:focus {
+      border-color: var(--primary);
+    }
+
+    .close-modal {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
 
+  <!-- Header -->
   <header>
     <div class="nav-container">
-      <div class="logo">
+      <a href="/" class="logo">
         <span>⚡ SitePulse AI</span>
-        <span class="logo-badge">SaaS Live</span>
+        <span class="logo-badge">v2.0 Pro</span>
+      </a>
+
+      <div class="nav-actions" id="auth-nav">
+        <!-- Rempli par JavaScript selon connexion -->
+        <button class="btn btn-secondary" onclick="openAuthModal('login')">🔑 Se connecter</button>
+        <button class="btn" onclick="openAuthModal('register')">✨ Créer un compte</button>
       </div>
-      <div class="badge-status">Backend Connecté (Port 8080)</div>
     </div>
   </header>
 
   <div class="container">
 
-    <section class="hero">
-      <h1>Audit & Surveillance Web Automatisé</h1>
-      <p>Entrez l'URL de n'importe quel site web ci-dessous. Le backend Python va exécuter l'analyse technique complète en direct sous vos yeux.</p>
+    <!-- Espace Membre Connecté -->
+    <section id="dashboard-section">
+      <div class="dash-header">
+        <div>
+          <h2 style="font-size: 1.6rem; font-weight: 800;">Tableau de Bord Privé</h2>
+          <p id="dash-welcome" style="color: var(--text-muted); font-size: 0.9rem; margin-top: 4px;">Connecté en tant que...</p>
+        </div>
+        <div>
+          <button class="btn" onclick="promptAddSite()">+ Ajouter un site à surveiller</button>
+        </div>
+      </div>
 
-      <!-- Search & Live Audit Form -->
-      <form class="search-box" id="audit-form" onsubmit="handleAudit(event)">
-        <input type="text" id="target-url" placeholder="Ex: https://stripe.com ou https://example.com" value="https://example.com" required>
+      <div>
+        <h3 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 12px;" id="sites-table-title">Vos Sites Sous Surveillance Active (Audit Nocturne 00:00 UTC)</h3>
+        <div style="overflow-x: auto;">
+          <table>
+            <thead>
+              <tr>
+                <th>Site Web</th>
+                <th>Adresse URL</th>
+                <th>Statut</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="my-sites-tbody">
+              <tr><td colspan="4" style="text-align: center; color: var(--text-muted);">Chargement de vos sites...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- Zone Publique : Formulaire d'Audit Gratuit -->
+    <section style="text-align: center; padding: 20px 0 30px;">
+      <h1 style="font-size: 2.5rem; font-weight: 800; margin-bottom: 14px;">Surveillance & Audit Web Automatisé</h1>
+      <p style="color: var(--text-muted); font-size: 1.1rem; max-width: 650px; margin: 0 auto 30px;">
+        Entrez l'URL d'un site web. Notre moteur Python analyse en direct sa santé, sa vitesse et son référencement.
+      </p>
+
+      <form class="search-box" onsubmit="handleAudit(event)">
+        <input type="text" id="target-url" placeholder="Ex: https://monsite.com" value="https://example.com" required>
         <button type="submit" class="btn" id="submit-btn">
           <span>⚡ Lancer l'Audit en Direct</span>
         </button>
       </form>
     </section>
 
-    <!-- Real-time Result Section -->
+    <!-- Résultat d'Audit en Direct -->
     <section id="result-section">
       <div class="result-card">
-        <div class="result-header">
+        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 20px; flex-wrap: wrap; gap: 16px;">
           <div>
-            <h2 id="res-url" style="font-size: 1.4rem; font-weight: 800; color: #fff;">https://...</h2>
-            <p id="res-date" style="color: var(--text-muted); font-size: 0.9rem; margin-top: 4px;">Analyse en temps réel</p>
+            <h2 id="res-url" style="font-size: 1.3rem; font-weight: 800; color: #fff;">https://...</h2>
+            <p id="res-date" style="color: var(--text-muted); font-size: 0.85rem; margin-top: 4px;">Analyse en direct</p>
           </div>
           <div class="score-circle">
             <div id="res-score" class="score-val" style="color: #34d399;">--</div>
-            <div style="font-size: 0.9rem; color: var(--text-muted); line-height: 1.2;">
+            <div style="font-size: 0.85rem; color: var(--text-muted);">
               <div>Score Global</div>
               <strong style="color: #fff;">sur 100</strong>
             </div>
@@ -337,81 +443,283 @@
         </div>
 
         <div class="grid-2">
-          <!-- Points forts -->
           <div class="box">
             <h3 style="color: #34d399;">✅ Points Forts Détectés</h3>
             <ul id="res-strengths"></ul>
           </div>
-
-          <!-- Alertes -->
           <div class="box">
             <h3 style="color: #fbbf24;">⚠️ Points d'Amélioration & Alertes</h3>
             <ul id="res-alerts"></ul>
           </div>
         </div>
 
-        <!-- Recommandations -->
-        <div class="box" style="margin-bottom: 24px;">
+        <div class="box" style="margin-bottom: 20px;">
           <h3 style="color: #818cf8;">🎯 Plan d'Action Recommandé</h3>
           <ul id="res-recs"></ul>
         </div>
 
-        <button onclick="addCurrentToMonitoring()" class="btn" style="background: #10b981;">
-          🛡️ Ajouter ce site à la surveillance quotidienne (minuit)
+        <button onclick="saveAuditedSite()" class="btn" style="background: #10b981;">
+          🛡️ Ajouter ce site à la surveillance quotidienne
         </button>
       </div>
     </section>
 
-    <!-- Table of active clients -->
-    <div class="table-card">
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
-        <h2 style="font-size: 1.25rem; font-weight: 700;">📋 Portefeuille Clients Surveillés (Lu depuis clients.json)</h2>
-        <span style="font-size: 0.85rem; color: var(--text-muted);">Mise à jour automatique</span>
-      </div>
+  </div>
 
-      <div style="overflow-x: auto;">
-        <table>
-          <thead>
-            <tr>
-              <th>Client / Nom</th>
-              <th>Adresse du Site</th>
-              <th>Formule</th>
-              <th>Statut</th>
-            </tr>
-          </thead>
-          <tbody id="clients-tbody">
-            <tr><td colspan="4" style="text-align: center; color: var(--text-muted);">Chargement des clients...</td></tr>
-          </tbody>
-        </table>
+  <!-- Modal Connexion / Inscription -->
+  <div class="modal-overlay" id="auth-modal">
+    <div class="modal-card">
+      <button class="close-modal" onclick="closeAuthModal()">&times;</button>
+      <h2 id="modal-title">Connexion à votre Espace</h2>
+      <p id="modal-sub">Accédez à vos sites sous surveillance et vos rapports.</p>
+
+      <form onsubmit="handleAuthSubmit(event)">
+        <div class="form-group" id="group-name" style="display: none;">
+          <label>Votre Nom ou Nom d'Entreprise</label>
+          <input type="text" id="auth-name" placeholder="Ex: Boulangerie Dupont">
+        </div>
+
+        <div class="form-group">
+          <label>Adresse E-mail</label>
+          <input type="email" id="auth-email" placeholder="nom@entreprise.fr" required>
+        </div>
+
+        <div class="form-group">
+          <label>Mot de passe</label>
+          <input type="password" id="auth-password" placeholder="••••••••" required>
+        </div>
+
+        <button type="submit" class="btn" style="width: 100%; justify-content: center; margin-top: 10px;" id="modal-btn">
+          Se connecter
+        </button>
+      </form>
+
+      <div style="text-align: center; margin-top: 18px; font-size: 0.85rem; color: var(--text-muted);">
+        <span id="switch-text">Pas encore de compte ?</span>
+        <a href="javascript:void(0)" onclick="toggleAuthMode()" style="color: #818cf8; text-decoration: none; font-weight: 600; margin-left: 4px;" id="switch-link">Créer un compte</a>
       </div>
     </div>
-
   </div>
 
   <script>
-    let lastAuditedData = null;
+    let currentAuthMode = 'login';
+    let currentUser = null;
+    let authToken = localStorage.getItem('sitepulse_token');
+    let lastAudited = null;
 
-    // Charger les clients au démarrage
-    async function loadClients() {
-      try {
-        const res = await fetch('/api/clients');
-        const data = await res.json();
-        const tbody = document.getElementById('clients-tbody');
-        tbody.innerHTML = '';
+    // Initialisation
+    async function init() {
+      if (authToken) {
+        try {
+          const res = await fetch('/api/me', {
+            headers: { 'Authorization': `Bearer ${authToken}` }
+          });
+          if (res.ok) {
+            const data = await res.json();
+            currentUser = data.user;
+            renderAuthUI();
+            loadMySites();
+            return;
+          }
+        } catch (e) {
+          console.error(e);
+        }
+      }
+      localStorage.removeItem('sitepulse_token');
+      renderAuthUI();
+    }
+
+    function renderAuthUI() {
+      const nav = document.getElementById('auth-nav');
+      const dash = document.getElementById('dashboard-section');
+
+      if (currentUser) {
+        const roleClass = currentUser.role === 'admin' ? 'role-admin' : 'role-client';
+        const roleLabel = currentUser.role === 'admin' ? '⭐ Fondateur (Admin)' : 'Client Pro';
         
-        (data.clients || []).forEach(c => {
+        nav.innerHTML = `
+          <div class="user-pill">
+            <span>👤 <strong>${currentUser.name}</strong></span>
+            <span class="role-badge ${roleClass}">${roleLabel}</span>
+          </div>
+          <button class="btn btn-danger" onclick="logout()">Déconnexion</button>
+        `;
+        dash.style.display = 'block';
+        document.getElementById('dash-welcome').textContent = `${currentUser.email} • Formule : ${currentUser.plan}`;
+      } else {
+        nav.innerHTML = `
+          <button class="btn btn-secondary" onclick="openAuthModal('login')">🔑 Se connecter</button>
+          <button class="btn" onclick="openAuthModal('register')">✨ Créer un compte</button>
+        `;
+        dash.style.display = 'none';
+      }
+    }
+
+    async function loadMySites() {
+      if (!authToken) return;
+      try {
+        const res = await fetch('/api/my-sites', {
+          headers: { 'Authorization': `Bearer ${authToken}` }
+        });
+        const data = await res.json();
+        const tbody = document.getElementById('my-sites-tbody');
+        tbody.innerHTML = '';
+
+        if (data.is_admin) {
+          document.getElementById('sites-table-title').textContent = "🛡️ Vue Fondateur (Tous les Sites & Clients Enregistrés)";
+        }
+
+        if (!data.sites || data.sites.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: var(--text-muted);">Aucun site sous surveillance. Cliquez sur "+ Ajouter un site" !</td></tr>`;
+          return;
+        }
+
+        data.sites.forEach(s => {
           const tr = document.createElement('tr');
+          const ownerInfo = s.owner_name ? `<br><small style="color: #94a3b8;">Propriétaire: ${s.owner_name}</small>` : '';
           tr.innerHTML = `
-            <td><strong>${c.name}</strong></td>
-            <td><a href="${c.url}" target="_blank" style="color: #818cf8; text-decoration: none;">${c.url}</a></td>
-            <td>${c.plan || 'Pro (49€/mois)'}</td>
-            <td><span class="badge-pill pill-green">🟢 Actif (00:00 UTC)</span></td>
+            <td><strong>${s.name}</strong>${ownerInfo}</td>
+            <td><a href="${s.url}" target="_blank" style="color: #818cf8; text-decoration: none;">${s.url}</a></td>
+            <td><span class="pill pill-green">🟢 Actif (00:00 UTC)</span></td>
+            <td>
+              <button class="btn btn-secondary" style="padding: 4px 10px; font-size: 0.8rem;" onclick="testAuditDirect('${s.url}')">Tester maintenant</button>
+            </td>
           `;
           tbody.appendChild(tr);
         });
       } catch (e) {
         console.error(e);
       }
+    }
+
+    function openAuthModal(mode) {
+      currentAuthMode = mode;
+      const modal = document.getElementById('auth-modal');
+      const title = document.getElementById('modal-title');
+      const groupName = document.getElementById('group-name');
+      const btn = document.getElementById('modal-btn');
+      const swText = document.getElementById('switch-text');
+      const swLink = document.getElementById('switch-link');
+
+      if (mode === 'register') {
+        title.textContent = "Créer votre Espace Client";
+        groupName.style.display = 'block';
+        btn.textContent = "S'inscrire";
+        swText.textContent = "Déjà un compte ?";
+        swLink.textContent = "Se connecter";
+      } else {
+        title.textContent = "Connexion à votre Espace";
+        groupName.style.display = 'none';
+        btn.textContent = "Se connecter";
+        swText.textContent = "Pas encore de compte ?";
+        swLink.textContent = "Créer un compte";
+      }
+      modal.style.display = 'flex';
+    }
+
+    function closeAuthModal() {
+      document.getElementById('auth-modal').style.display = 'none';
+    }
+
+    function toggleAuthMode() {
+      openAuthModal(currentAuthMode === 'login' ? 'register' : 'login');
+    }
+
+    async function handleAuthSubmit(e) {
+      e.preventDefault();
+      const email = document.getElementById('auth-email').value;
+      const password = document.getElementById('auth-password').value;
+      const name = document.getElementById('auth-name').value;
+
+      const endpoint = currentAuthMode === 'register' ? '/api/register' : '/api/login';
+      const payload = currentAuthMode === 'register' ? { name, email, password } : { email, password };
+
+      try {
+        const res = await fetch(endpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        const data = await res.json();
+        if (data.success) {
+          authToken = data.token;
+          currentUser = data.user;
+          localStorage.setItem('sitepulse_token', authToken);
+          closeAuthModal();
+          renderAuthUI();
+          loadMySites();
+        } else {
+          alert("Erreur : " + data.error);
+        }
+      } catch (err) {
+        alert("Erreur de connexion : " + err);
+      }
+    }
+
+    async function logout() {
+      if (authToken) {
+        await fetch('/api/logout', {
+          method: 'POST',
+          headers: { 'Authorization': `Bearer ${authToken}` }
+        });
+      }
+      localStorage.removeItem('sitepulse_token');
+      authToken = null;
+      currentUser = null;
+      renderAuthUI();
+    }
+
+    async function promptAddSite() {
+      const name = prompt("Nom du site (ex: Mon Restaurant) :");
+      if (!name) return;
+      const url = prompt("Adresse URL (ex: https://monsite.fr) :");
+      if (!url) return;
+
+      const res = await fetch('/api/my-sites', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${authToken}`
+        },
+        body: JSON.stringify({ name, url })
+      });
+      const data = await res.json();
+      if (data.success) {
+        alert("✅ Site ajouté avec succès à votre surveillance !");
+        loadMySites();
+      } else {
+        alert("Erreur : " + data.error);
+      }
+    }
+
+    async function saveAuditedSite() {
+      if (!lastAudited) return;
+      if (!currentUser) {
+        alert("Veuillez vous connecter ou créer un compte pour rattacher ce site à votre espace privé !");
+        openAuthModal('register');
+        return;
+      }
+      const name = prompt("Nom du site :", lastAudited.url);
+      if (!name) return;
+
+      const res = await fetch('/api/my-sites', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${authToken}`
+        },
+        body: JSON.stringify({ name, url: lastAudited.url })
+      });
+      const data = await res.json();
+      if (data.success) {
+        alert("✅ Site ajouté à votre tableau de bord !");
+        loadMySites();
+      }
+    }
+
+    async function testAuditDirect(url) {
+      document.getElementById('target-url').value = url;
+      document.getElementById('submit-btn').click();
     }
 
     async function handleAudit(e) {
@@ -430,10 +738,10 @@
           body: JSON.stringify({ url: targetUrl })
         });
         const data = await res.json();
-        lastAuditedData = data;
+        lastAudited = data;
         displayResult(data);
       } catch (err) {
-        alert("Erreur lors de l'appel au backend : " + err);
+        alert("Erreur d'audit : " + err);
       } finally {
         submitBtn.disabled = false;
         submitBtn.innerHTML = '<span>⚡ Lancer l\'Audit en Direct</span>';
@@ -446,46 +754,18 @@
       sec.scrollIntoView({ behavior: 'smooth' });
 
       document.getElementById('res-url').textContent = data.url;
-      document.getElementById('res-date').textContent = `Temps serveur : ${data.response_time_ms} ms | Code HTTP : ${data.status_code}`;
+      document.getElementById('res-date').textContent = `Temps serveur : ${data.response_time_ms} ms | Statut HTTP : ${data.status_code}`;
       
       const scoreEl = document.getElementById('res-score');
       scoreEl.textContent = data.score;
       scoreEl.style.color = data.score >= 80 ? '#34d399' : (data.score >= 50 ? '#fbbf24' : '#ef4444');
 
-      // Points forts
-      const strList = document.getElementById('res-strengths');
-      strList.innerHTML = (data.points_forts || []).map(p => `<li>✓ ${p}</li>`).join('') || '<li>Aucun point fort spécifique.</li>';
-
-      // Alertes
-      const altList = document.getElementById('res-alerts');
-      altList.innerHTML = (data.alertes || []).map(a => `<li>⚠️ ${a}</li>`).join('') || '<li>Aucune anomalie détectée !</li>';
-
-      // Recommandations
-      const recList = document.getElementById('res-recs');
-      recList.innerHTML = (data.recommandations || []).map((r, i) => `<li><strong>${i+1}.</strong> ${r}</li>`).join('') || '<li>Votre site est idéalement configuré.</li>';
+      document.getElementById('res-strengths').innerHTML = (data.points_forts || []).map(p => `<li>✓ ${p}</li>`).join('') || '<li>Aucun point fort.</li>';
+      document.getElementById('res-alerts').innerHTML = (data.alertes || []).map(a => `<li>⚠️ ${a}</li>`).join('') || '<li>Aucune alerte !</li>';
+      document.getElementById('res-recs').innerHTML = (data.recommandations || []).map((r, i) => `<li><strong>${i+1}.</strong> ${r}</li>`).join('') || '<li>Optimisé.</li>';
     }
 
-    async function addCurrentToMonitoring() {
-      if (!lastAuditedData) return;
-      const clientName = prompt("Nom du client ou de l'entreprise :", "Nouveau Client");
-      if (!clientName) return;
-
-      const res = await fetch('/api/clients', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          name: clientName,
-          url: lastAuditedData.url,
-          email: "client@email.com",
-          plan: "Pro (49€/mois)"
-        })
-      });
-      await res.json();
-      alert("✅ Site ajouté avec succès à la surveillance quotidienne !");
-      loadClients();
-    }
-
-    loadClients();
+    init();
   </script>
 
 </body>
