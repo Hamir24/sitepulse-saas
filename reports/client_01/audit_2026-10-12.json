@@ -1,0 +1,39 @@
+{
+  "success": true,
+  "url": "https://example.com",
+  "date": "2026-10-12 21:14:10",
+  "status_code": 200,
+  "response_time_ms": 705,
+  "score": 70,
+  "metrics": {
+    "title": "Example Domain",
+    "meta_description": "",
+    "viewport": "width=device-width,initial-scale=1",
+    "h1_count": 0,
+    "h2_count": 0,
+    "images_count": 0,
+    "images_missing_alt": 0,
+    "internal_links_count": 0
+  },
+  "points_forts": [
+    "Temps de réponse acceptable (705 ms)",
+    "Connexion sécurisée par certificat SSL (HTTPS activé)",
+    "Balise meta viewport présente (adaptation mobile active)",
+    "Aucune image détectée sur la page d'accueil."
+  ],
+  "alertes": [
+    "Titre trop court (14 caractères) : « Example Domain »",
+    "Meta description absente",
+    "Aucun titre principal <h1> trouvé sur la page",
+    "Balises Open Graph incomplètes (aperçu réduit lors des partages sur les réseaux)"
+  ],
+  "recommandations": [
+    "Enrichir la balise titre avec les mots-clés stratégiques de votre activité.",
+    "Rédiger une meta description percutante entre 120 et 155 caractères pour inciter au clic.",
+    "Définir exactement un titre <h1> décrivant la proposition de valeur principale.",
+    "Ajouter og:title, og:description et og:image pour maximiser les clics sur les réseaux sociaux."
+  ],
+  "client_name": "Boutique Mode Démo",
+  "client_email": "contact@boutiquemode-demo.fr",
+  "client_plan": "Pro (29€/mois)"
+}

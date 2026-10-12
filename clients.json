@@ -1,0 +1,41 @@
+{
+  "settings": {
+    "saas_name": "SitePulse AI - Surveillance & Audit Web Quotidien",
+    "alert_threshold_score": 60,
+    "notify_on_down": true
+  },
+  "clients": [
+    {
+      "id": "client_01",
+      "name": "Boutique Mode Démo",
+      "url": "https://example.com",
+      "email": "contact@boutiquemode-demo.fr",
+      "plan": "Pro (29€/mois)",
+      "active": true
+    },
+    {
+      "id": "client_02",
+      "name": "Portail Tech Python",
+      "url": "https://www.python.org",
+      "email": "dev@python-portal-demo.com",
+      "plan": "Pro (29€/mois)",
+      "active": true
+    },
+    {
+      "name": "Nouveau Client",
+      "url": "https://example.com",
+      "email": "client@email.com",
+      "plan": "Pro (49€/mois)",
+      "id": "client_03",
+      "active": true
+    },
+    {
+      "name": "Nouveau Client",
+      "url": "https://example.com",
+      "email": "client@email.com",
+      "plan": "Pro (49€/mois)",
+      "id": "client_04",
+      "active": true
+    }
+  ]
+}

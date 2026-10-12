@@ -1,0 +1,1 @@
+# 100% Python Standard Library - Aucune dépendance externe requise !
