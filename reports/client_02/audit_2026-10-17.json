@@ -1,0 +1,45 @@
+{
+  "success": true,
+  "url": "https://www.python.org",
+  "date": "2026-10-17 02:25:14",
+  "status_code": 200,
+  "response_time_ms": 503,
+  "score": 95,
+  "metrics": {
+    "title": "Welcome to Python.org",
+    "meta_description": "The official home of the Python Programming Language",
+    "viewport": "width=device-width, initial-scale=1.0",
+    "h1_count": 5,
+    "h2_count": 10,
+    "images_count": 1,
+    "images_missing_alt": 0,
+    "internal_links_count": 215,
+    "cms_detected": "Sur-mesure (Custom)",
+    "security_headers": {
+      "hsts": true,
+      "x_frame_options": "SAMEORIGIN",
+      "x_content_type_options": "",
+      "server": "nginx"
+    }
+  },
+  "points_forts": [
+    "Temps de réponse serveur excellent (503 ms)",
+    "Connexion sécurisée par certificat SSL (HTTPS activé)",
+    "Balise <title> optimale (21 caractères) : « Welcome to Python.org »",
+    "Meta description présente et bien calibrée (52 caractères)",
+    "Balise meta viewport présente (adaptation mobile active)",
+    "Accessibilité exemplaire : les 1 images ont toutes une balise descriptive (alt)",
+    "Balises Open Graph configurées (partage optimal sur LinkedIn, Twitter, Facebook)",
+    "Protection HSTS active (navigation HTTPS renforcée contre l'interception)",
+    "En-tête X-Frame-Options présent (protection anti-clickjacking)"
+  ],
+  "alertes": [
+    "Multiples titres <h1> détectés (5 balises H1)"
+  ],
+  "recommandations": [
+    "Conserver un seul <h1> principal par page et hiérarchiser les autres en <h2> et <h3>."
+  ],
+  "client_name": "Portail Tech Python",
+  "client_email": "dev@python-portal-demo.com",
+  "client_plan": "Pro (29€/mois)"
+}

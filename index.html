@@ -795,9 +795,42 @@
       gap: 20px;
     }
 
-    .footer-copy {
-      color: var(--text-dim);
-      font-size: 0.85rem;
+    /* Styles d'export et d'impression PDF */
+    @media print {
+      header, .search-container, .stats-strip, #fonctionnalites, #comment-ca-marche, #tarifs, footer, .btn, #auth-modal, #dashboard-section {
+        display: none !important;
+      }
+      body {
+        background: #ffffff !important;
+        color: #000000 !important;
+        padding: 0 !important;
+      }
+      .container {
+        max-width: 100% !important;
+        padding: 0 !important;
+      }
+      #result-section {
+        display: block !important;
+        margin: 0 !important;
+      }
+      .result-card {
+        background: #ffffff !important;
+        border: 1px solid #e2e8f0 !important;
+        box-shadow: none !important;
+        color: #0f172a !important;
+        padding: 20px !important;
+      }
+      .detail-box {
+        background: #f8fafc !important;
+        border: 1px solid #cbd5e1 !important;
+        color: #0f172a !important;
+      }
+      .detail-box ul li {
+        color: #1e293b !important;
+      }
+      .res-score-number, h2, h3 {
+        color: #0f172a !important;
+      }
     }
   </style>
 </head>
@@ -958,9 +991,17 @@
           <ul id="res-recs-list"></ul>
         </div>
 
-        <button onclick="saveCurrentAuditedSite()" class="btn btn-success" style="font-size: 1rem; padding: 14px 28px;">
-          🛡️ Mettre ce site sous surveillance quotidienne automatique
-        </button>
+        <div style="display: flex; gap: 14px; flex-wrap: wrap; margin-top: 10px;">
+          <button onclick="saveCurrentAuditedSite()" class="btn btn-success" style="font-size: 0.95rem; padding: 14px 24px;">
+            🛡️ Mettre ce site sous surveillance
+          </button>
+          <button onclick="window.print()" class="btn btn-secondary" style="font-size: 0.95rem; padding: 14px 20px;">
+            🖨️ Imprimer / Sauvegarder en PDF
+          </button>
+          <button onclick="sendReportPrompt()" class="btn btn-secondary" style="font-size: 0.95rem; padding: 14px 20px;">
+            📧 M'envoyer le rapport par e-mail
+          </button>
+        </div>
       </div>
     </section>
 
@@ -1058,7 +1099,7 @@
             <li>Plan d'action d'optimisation</li>
             <li>Support par e-mail</li>
           </ul>
-          <button class="btn btn-secondary" onclick="openAuth('register')">Choisir Starter</button>
+          <button class="btn btn-secondary" onclick="checkoutPlan('starter')">Choisir Starter</button>
         </div>
 
         <!-- Pro (Recommandé) -->
@@ -1075,7 +1116,7 @@
             <li>Rapports téléchargeables</li>
             <li>Support prioritaire 7j/7</li>
           </ul>
-          <button class="btn btn-primary" onclick="openAuth('register')">Démarrer avec Pro</button>
+          <button class="btn btn-primary" onclick="checkoutPlan('pro')">Démarrer avec Pro</button>
         </div>
 
         <!-- Agence -->
@@ -1091,7 +1132,7 @@
             <li>Accès API & export JSON</li>
             <li>Gestionnaire de compte dédié</li>
           </ul>
-          <button class="btn btn-secondary" onclick="openAuth('register')">Choisir Agence</button>
+          <button class="btn btn-secondary" onclick="checkoutPlan('agency')">Choisir Agence</button>
         </div>
       </div>
     </section>
@@ -1152,9 +1193,21 @@
     let currentUserData = null;
     let token = localStorage.getItem('sitepulse_token');
     let currentAuditResult = null;
+    let stripeSettings = {};
 
     // Au chargement de la page
     async function initApp() {
+      // Charger les liens de paiement Stripe depuis le backend
+      try {
+        const cfgRes = await fetch('/api/config');
+        if (cfgRes.ok) {
+          const cfg = await cfgRes.json();
+          stripeSettings = cfg.stripe || {};
+        }
+      } catch (e) {
+        console.error("Config Stripe indisponible :", e);
+      }
+
       if (token) {
         try {
           const res = await fetch('/api/me', {
@@ -1381,7 +1434,17 @@
       sec.scrollIntoView({ behavior: 'smooth' });
 
       document.getElementById('res-target-url').textContent = data.url;
-      document.getElementById('res-target-meta').textContent = `Temps de réponse : ${data.response_time_ms} ms • Code HTTP : ${data.status_code}`;
+      
+      const cms = (data.metrics && data.metrics.cms_detected) ? data.metrics.cms_detected : "Non détecté";
+      const hasHsts = data.metrics && data.metrics.security_headers && data.metrics.security_headers.hsts;
+      const hstsBadge = hasHsts ? '<span style="color:#34d399; font-weight:700;">✓ HSTS Actif</span>' : '<span style="color:#f59e0b; font-weight:700;">Sans HSTS</span>';
+      
+      document.getElementById('res-target-meta').innerHTML = `
+        Vitesse : <strong>${data.response_time_ms} ms</strong> • 
+        Statut : <strong>HTTP ${data.status_code}</strong> • 
+        Technologie : <strong style="color:#818cf8;">${cms}</strong> • 
+        Sécurité : ${hstsBadge}
+      `;
 
       const scoreEl = document.getElementById('res-score-display');
       scoreEl.textContent = data.score;
@@ -1390,6 +1453,53 @@
       document.getElementById('res-strengths-list').innerHTML = (data.points_forts || []).map(p => `<li>✓ ${p}</li>`).join('') || '<li>Aucun point fort spécifique.</li>';
       document.getElementById('res-alerts-list').innerHTML = (data.alertes || []).map(a => `<li>⚠️ ${a}</li>`).join('') || '<li>Aucune alerte majeure détectée.</li>';
       document.getElementById('res-recs-list').innerHTML = (data.recommandations || []).map((r, i) => `<li><strong>${i+1}.</strong> ${r}</li>`).join('') || '<li>Le site respecte les meilleures pratiques.</li>';
+    }
+
+    // Gestion des abonnements Stripe
+    function checkoutPlan(plan) {
+      const key = plan + '_payment_url';
+      const stripeUrl = stripeSettings[key];
+      
+      if (stripeUrl && stripeUrl.startsWith('http') && !stripeUrl.includes('test_')) {
+        // Redirection vers le vrai Stripe Checkout
+        window.location.href = stripeUrl;
+      } else {
+        // Mode démo / pré-inscription
+        if (!currentUserData) {
+          alert(`Formule ${plan.toUpperCase()} sélectionnée !\n\nCréez votre compte en 10 secondes pour démarrer votre essai ou finaliser l'abonnement.`);
+          openAuth('register');
+        } else {
+          alert(`Formule ${plan.toUpperCase()} enregistrée pour votre compte ${currentUserData.email} !\n\nPour connecter vos vrais liens de paiement Stripe, renseignez-les dans le fichier config.json.`);
+        }
+      }
+    }
+
+    // Envoi du rapport d'audit par e-mail en 1 clic
+    async function sendReportPrompt() {
+      if (!currentAuditResult) return;
+      const defaultEmail = currentUserData ? currentUserData.email : "";
+      const email = prompt("À quelle adresse e-mail souhaitez-vous recevoir ce rapport d'audit ?", defaultEmail);
+      if (!email) return;
+
+      try {
+        const res = await fetch('/api/send-test-email', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            email: email,
+            url: currentAuditResult.url,
+            audit_data: currentAuditResult
+          })
+        });
+        const data = await res.json();
+        if (data.success) {
+          alert("✅ Rapport d'audit envoyé avec succès à " + email + " !\n\n(Vérifiez votre boîte de réception ou le dossier reports/emails_outbox)");
+        } else {
+          alert("Notice : " + data.message);
+        }
+      } catch (err) {
+        alert("Erreur lors de l'envoi : " + err);
+      }
     }
 
     async function saveCurrentAuditedSite() {

@@ -100,6 +100,14 @@ def run_audit(target_url):
                     raw_bytes = gzip.decompress(raw_bytes)
                 except Exception:
                     pass
+
+            # En-têtes de sécurité HTTP
+            sec_headers = {
+                "hsts": bool(response.headers.get('Strict-Transport-Security')),
+                "x_frame_options": response.headers.get('X-Frame-Options', ''),
+                "x_content_type_options": response.headers.get('X-Content-Type-Options', ''),
+                "server": response.headers.get('Server', '')
+            }
             raw_html = raw_bytes.decode(charset, errors='replace')
             target_url = final_url
     except Exception as e:
@@ -109,6 +117,22 @@ def run_audit(target_url):
             "error": str(e),
             "date": audit_date
         }
+        
+    # Détection de CMS / Framework
+    cms_detected = "Sur-mesure (Custom)"
+    html_lower = raw_html.lower()
+    if "wp-content" in html_lower or "wp-includes" in html_lower or 'content="wordpress' in html_lower:
+        cms_detected = "WordPress"
+    elif "cdn.shopify.com" in html_lower or "window.shopify" in html_lower:
+        cms_detected = "Shopify"
+    elif "assets.website-files.com" in html_lower or "data-wf-page" in html_lower:
+        cms_detected = "Webflow"
+    elif "static.wixstatic.com" in html_lower or "wix.com" in html_lower:
+        cms_detected = "Wix"
+    elif "__next_data__" in html_lower:
+        cms_detected = "Next.js (React)"
+    elif "prestashop" in html_lower:
+        cms_detected = "PrestaShop"
         
     # Analyse HTML
     parser = PageParser(target_url)
@@ -238,6 +262,15 @@ def run_audit(target_url):
         alertes.append("Balises Open Graph incomplètes (aperçu réduit lors des partages sur les réseaux)")
         recommandations.append("Ajouter og:title, og:description et og:image pour maximiser les clics sur les réseaux sociaux.")
 
+    # 9. En-têtes de sécurité HTTP
+    if sec_headers.get("hsts"):
+        points_forts.append("Protection HSTS active (navigation HTTPS renforcée contre l'interception)")
+    if sec_headers.get("x_frame_options"):
+        points_forts.append("En-tête X-Frame-Options présent (protection anti-clickjacking)")
+    else:
+        alertes.append("En-tête de sécurité X-Frame-Options non configuré")
+        recommandations.append("Ajouter l'en-tête X-Frame-Options: SAMEORIGIN pour empêcher l'intégration non autorisée de votre site en iframe.")
+
     score = max(0, min(100, score))
     
     return {
@@ -255,7 +288,9 @@ def run_audit(target_url):
             "h2_count": len(parser.headings['h2']),
             "images_count": total_imgs,
             "images_missing_alt": missing_alt,
-            "internal_links_count": len(parser.links)
+            "internal_links_count": len(parser.links),
+            "cms_detected": cms_detected,
+            "security_headers": sec_headers
         },
         "points_forts": points_forts,
         "alertes": alertes,
@@ -282,6 +317,8 @@ def generate_markdown_report(audit_data):
     report.append(f"| **Meta Description** | `{len(audit_data['metrics']['meta_description'])} caractères` | {'✅ Optimal' if 50 <= len(audit_data['metrics']['meta_description']) <= 165 else '⚠️ À revoir'} |")
     report.append(f"| **Hiérarchie Titres H1** | `{audit_data['metrics']['h1_count']} balise(s) H1` | {'✅ Correct' if audit_data['metrics']['h1_count'] == 1 else '⚠️ Anormal'} |")
     report.append(f"| **Images sans attribut ALT** | `{audit_data['metrics']['images_missing_alt']} / {audit_data['metrics']['images_count']}` | {'✅ Aucune' if audit_data['metrics']['images_missing_alt'] == 0 else '⚠️ Manquantes'} |")
+    report.append(f"| **Technologie / CMS** | `{audit_data['metrics'].get('cms_detected', 'Non détecté')}` | ℹ️ Détection IA |")
+    report.append(f"| **Sécurité HSTS** | `{'Activé' if audit_data['metrics'].get('security_headers', {}).get('hsts') else 'Désactivé'}` | {'✅ Sécurisé' if audit_data['metrics'].get('security_headers', {}).get('hsts') else '⚠️ Recommandé'} |")
     report.append(f"| **Liens détectés** | `{audit_data['metrics']['internal_links_count']} liens` | ℹ️ Structure interne |\n")
 
     report.append("### ✅ Points Forts Détectés")

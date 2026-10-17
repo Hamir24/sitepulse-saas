@@ -8,6 +8,7 @@ import sys
 import json
 from datetime import datetime
 from audit_engine import run_audit, generate_markdown_report
+from mailer import send_audit_email
 
 if sys.platform == "win32":
     try:
@@ -67,6 +68,11 @@ def run_all():
         score = audit_res.get("score", 0)
         badge = "🟢" if score >= 80 else ("🟡" if score >= 50 else "🔴")
         print(f"   {badge} Score : {score}/100 | Rapport généré : {report_path}")
+
+        # Envoi automatique de l'e-mail au client
+        c_email = client.get("email")
+        if c_email:
+            send_audit_email(c_email, cname, url, audit_res)
 
     # Génération du Master Digest pour le fondateur
     digest = []

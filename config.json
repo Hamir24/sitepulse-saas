@@ -1,0 +1,21 @@
+{
+  "stripe_settings": {
+    "starter_payment_url": "https://buy.stripe.com/test_starter_19",
+    "pro_payment_url": "https://buy.stripe.com/test_pro_49",
+    "agency_payment_url": "https://buy.stripe.com/test_agency_149"
+  },
+  "email_settings": {
+    "provider": "outbox",
+    "from_email": "SitePulse AI <alerts@sitepulse-ai.com>",
+    "resend_api_key": "",
+    "smtp_host": "",
+    "smtp_port": 587,
+    "smtp_user": "",
+    "smtp_pass": ""
+  },
+  "general": {
+    "saas_name": "SitePulse AI",
+    "support_email": "contact@sitepulse-ai.com",
+    "production_url": "https://sitepulse-saas.onrender.com"
+  }
+}

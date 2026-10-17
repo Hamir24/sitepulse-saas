@@ -10,6 +10,7 @@ import json
 import urllib.parse
 from http.server import HTTPServer, SimpleHTTPRequestHandler
 from audit_engine import run_audit
+from mailer import send_audit_email
 import db
 
 if sys.platform == "win32":
@@ -76,6 +77,21 @@ class SaaSHandler(SimpleHTTPRequestHandler):
             is_admin = (user["role"] == "admin")
             sites = db.get_user_sites(user["id"], is_admin=is_admin)
             return self._send_json({"sites": sites, "is_admin": is_admin})
+
+        elif path == "/api/config":
+            cfg_path = os.path.join(BASE_DIR, "config.json")
+            cfg_data = {}
+            if os.path.exists(cfg_path):
+                try:
+                    with open(cfg_path, "r", encoding="utf-8") as f:
+                        cfg_data = json.load(f)
+                except Exception:
+                    pass
+            # Renvoyer les liens de paiement publics
+            return self._send_json({
+                "stripe": cfg_data.get("stripe_settings", {}),
+                "general": cfg_data.get("general", {})
+            })
 
         elif path == "/api/clients":
             # Compatibilité V1
@@ -145,6 +161,16 @@ class SaaSHandler(SimpleHTTPRequestHandler):
                 
             site_id = db.add_user_site(user["id"], site_name, site_url)
             return self._send_json({"success": True, "site_id": site_id})
+
+        # Tester l'envoi d'e-mail de rapport
+        elif path == "/api/send-test-email":
+            dest_email = body.get("email", "").strip()
+            site_url = body.get("url", "https://example.com").strip()
+            audit_data = body.get("audit_data")
+            if not audit_data:
+                audit_data = run_audit(site_url)
+            ok, msg = send_audit_email(dest_email, "Client Test", site_url, audit_data)
+            return self._send_json({"success": ok, "message": msg})
 
         else:
             return self._send_json({"error": "Route introuvable"}, 404)
