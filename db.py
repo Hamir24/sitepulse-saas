@@ -6,6 +6,7 @@ Gère les comptes utilisateurs, les sessions, les sites surveillés et l'histori
 
 import sqlite3
 import hashlib
+import hmac
 import secrets
 import os
 import json
@@ -18,18 +19,30 @@ def get_db():
     conn.row_factory = sqlite3.Row
     return conn
 
+PBKDF2_ITERATIONS = 200_000
+
 def hash_password(password, salt=None):
+    """Hash sécurisé (PBKDF2-SHA256, 200 000 itérations) — 100% bibliothèque standard."""
     if not salt:
         salt = secrets.token_hex(16)
-    hashed = hashlib.sha256((password + salt).encode("utf-8")).hexdigest()
-    return f"{salt}${hashed}"
+    dk = hashlib.pbkdf2_hmac("sha256", password.encode("utf-8"), salt.encode("utf-8"), PBKDF2_ITERATIONS)
+    return f"pbkdf2${PBKDF2_ITERATIONS}${salt}${dk.hex()}"
+
+def is_modern_hash(stored_hash):
+    return stored_hash.startswith("pbkdf2$")
 
 def verify_password(password, stored_hash):
-    if "$" not in stored_hash:
+    try:
+        if is_modern_hash(stored_hash):
+            _, iterations, salt, hashed = stored_hash.split("$")
+            dk = hashlib.pbkdf2_hmac("sha256", password.encode("utf-8"), salt.encode("utf-8"), int(iterations))
+            return hmac.compare_digest(dk.hex(), hashed)
+        # Ancien format (sha256 + sel) : encore accepté, puis converti à la connexion
+        salt, hashed = stored_hash.split("$", 1)
+        test_hash = hashlib.sha256((password + salt).encode("utf-8")).hexdigest()
+        return hmac.compare_digest(test_hash, hashed)
+    except Exception:
         return False
-    salt, hashed = stored_hash.split("$", 1)
-    test_hash = hashlib.sha256((password + salt).encode("utf-8")).hexdigest()
-    return test_hash == hashed
 
 def init_db():
     with get_db() as conn:
@@ -85,17 +98,24 @@ def init_db():
             )
         """)
         
-        # Création du compte Fondateur Admin par défaut s'il n'existe pas
-        cursor.execute("SELECT id FROM users WHERE email = 'admin@sitepulse.ai'")
-        if not cursor.fetchone():
-            now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-            admin_pwd_hash = hash_password("admin123")
+        # --- Compte Fondateur (Admin) ---
+        # Le mot de passe vient de la variable d'environnement ADMIN_PASSWORD.
+        # Sans variable, un mot de passe aléatoire est généré et affiché UNE fois dans la console.
+        env_pwd = os.environ.get("ADMIN_PASSWORD", "").strip()
+        now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        cursor.execute("SELECT id, password_hash FROM users WHERE email = 'admin@sitepulse.ai'")
+        admin = cursor.fetchone()
+
+        if not admin:
+            pwd = env_pwd or secrets.token_urlsafe(12)
             cursor.execute("""
                 INSERT INTO users (name, email, password_hash, role, plan, created_at)
                 VALUES ('Fondateur (Admin)', 'admin@sitepulse.ai', ?, 'admin', 'Fondateur Unlimited', ?)
-            """, (admin_pwd_hash, now))
+            """, (hash_password(pwd), now))
             admin_id = cursor.lastrowid
-            
+            if not env_pwd:
+                print(f"🔑 Compte admin créé : admin@sitepulse.ai / {pwd}  (note-le, il ne sera plus affiché)")
+
             # Ajouter 2 sites exemples sous l'admin
             cursor.execute("""
                 INSERT INTO sites (user_id, name, url, active, created_at)
@@ -105,7 +125,16 @@ def init_db():
                 INSERT INTO sites (user_id, name, url, active, created_at)
                 VALUES (?, 'Portail Tech Python', 'https://www.python.org', 1, ?)
             """, (admin_id, now))
-            
+        elif env_pwd:
+            # ADMIN_PASSWORD défini : on (re)met ce mot de passe à chaque démarrage
+            cursor.execute("UPDATE users SET password_hash = ? WHERE id = ?", (hash_password(env_pwd), admin["id"]))
+        elif verify_password("admin123", admin["password_hash"]):
+            # Ancien mot de passe par défaut détecté : on le remplace tout de suite
+            pwd = secrets.token_urlsafe(12)
+            cursor.execute("UPDATE users SET password_hash = ? WHERE id = ?", (hash_password(pwd), admin["id"]))
+            cursor.execute("DELETE FROM sessions WHERE user_id = ?", (admin["id"],))
+            print(f"🔑 Ancien mot de passe 'admin123' remplacé. Nouveau : admin@sitepulse.ai / {pwd}")
+
         conn.commit()
 
 # --- Fonctions Utilisateurs & Auth ---
@@ -137,7 +166,11 @@ def login_user(email, password):
         user = cursor.fetchone()
         if not user or not verify_password(password, user["password_hash"]):
             return None, "Identifiants invalides."
-            
+
+        # Conversion automatique des anciens hash vers PBKDF2
+        if not is_modern_hash(user["password_hash"]):
+            cursor.execute("UPDATE users SET password_hash = ? WHERE id = ?", (hash_password(password), user["id"]))
+
         token = secrets.token_hex(24)
         now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         cursor.execute("INSERT INTO sessions (token, user_id, created_at) VALUES (?, ?, ?)", (token, user["id"], now))

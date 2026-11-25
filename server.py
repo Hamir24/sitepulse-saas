@@ -12,6 +12,7 @@ from http.server import HTTPServer, SimpleHTTPRequestHandler
 from audit_engine import run_audit
 from mailer import send_audit_email
 import db
+import time
 
 if sys.platform == "win32":
     try:
@@ -22,9 +23,43 @@ if sys.platform == "win32":
 PORT = int(os.environ.get("PORT", 8080))
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
+# Seuls ces fichiers sont accessibles publiquement (tout le reste = 404)
+PUBLIC_FILES = {"/", "/index.html", "/manifest.json", "/success.html"}
+
+# Limiteur de requêtes simple (par adresse IP)
+_HITS = {}
+
+def too_many_requests(key, limit, window_seconds):
+    now = time.time()
+    recent = [t for t in _HITS.get(key, []) if now - t < window_seconds]
+    if len(recent) >= limit:
+        _HITS[key] = recent
+        return True
+    recent.append(now)
+    _HITS[key] = recent
+    return False
+
 class SaaSHandler(SimpleHTTPRequestHandler):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, directory=BASE_DIR, **kwargs)
+
+    def send_head(self):
+        # Sécurité : on ne sert que les fichiers publics (pas la base de données, ni le code)
+        path = urllib.parse.urlparse(self.path).path
+        if path not in PUBLIC_FILES:
+            self.send_error(404, "Not found")
+            return None
+        return super().send_head()
+
+    def _client_ip(self):
+        forwarded = self.headers.get("X-Forwarded-For", "")
+        return forwarded.split(",")[0].strip() if forwarded else self.client_address[0]
+
+    def _rate_limited(self, name, limit, window_seconds):
+        if too_many_requests(f"{name}:{self._client_ip()}", limit, window_seconds):
+            self._send_json({"success": False, "error": "Trop de tentatives. Réessaie plus tard."}, 429)
+            return True
+        return False
 
     def _send_json(self, data, status=200):
         self.send_response(status)
@@ -94,11 +129,11 @@ class SaaSHandler(SimpleHTTPRequestHandler):
             })
 
         elif path == "/api/clients":
-            # Compatibilité V1
+            # Compatibilité V1 — réservé aux utilisateurs connectés
             user, _ = self._get_auth_user()
-            is_admin = user and user["role"] == "admin"
-            uid = user["id"] if user else 1
-            sites = db.get_user_sites(uid, is_admin=True)
+            if not user:
+                return self._send_json({"error": "Non authentifié"}, 401)
+            sites = db.get_user_sites(user["id"], is_admin=(user["role"] == "admin"))
             return self._send_json({"clients": sites})
 
         else:
@@ -111,6 +146,8 @@ class SaaSHandler(SimpleHTTPRequestHandler):
 
         # Inscription
         if path == "/api/register":
+            if self._rate_limited("register", 10, 3600):
+                return
             name = body.get("name", "").strip()
             email = body.get("email", "").strip()
             password = body.get("password", "").strip()
@@ -125,6 +162,8 @@ class SaaSHandler(SimpleHTTPRequestHandler):
 
         # Connexion
         elif path == "/api/login":
+            if self._rate_limited("login", 10, 300):
+                return
             email = body.get("email", "").strip()
             password = body.get("password", "").strip()
 
@@ -142,6 +181,8 @@ class SaaSHandler(SimpleHTTPRequestHandler):
 
         # Audit en direct
         elif path == "/api/audit":
+            if self._rate_limited("audit", 30, 3600):
+                return
             url = body.get("url", "").strip()
             if not url:
                 return self._send_json({"success": False, "error": "URL manquante"}, 400)
@@ -164,6 +205,8 @@ class SaaSHandler(SimpleHTTPRequestHandler):
 
         # Tester l'envoi d'e-mail de rapport
         elif path == "/api/send-test-email":
+            if self._rate_limited("email", 5, 3600):
+                return
             dest_email = body.get("email", "").strip()
             site_url = body.get("url", "https://example.com").strip()
             audit_data = body.get("audit_data")
@@ -181,7 +224,7 @@ def run_server():
     print(f"======================================================")
     print(f"🚀 VERSION 2 DÉMARRÉE (Auth + Espace Membre + SQLite)")
     print(f"🌐 Accédez à votre SaaS sur : http://localhost:{PORT}")
-    print(f"🔑 Compte Fondateur (Admin) : admin@sitepulse.ai / admin123")
+    print(f"🔑 Compte Fondateur (Admin) : admin@sitepulse.ai (mot de passe = variable ADMIN_PASSWORD)")
     print(f"======================================================")
     httpd.serve_forever()
 

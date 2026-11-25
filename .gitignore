@@ -1,3 +1,20 @@
+# --- Python ---
 __pycache__/
 *.pyc
+.venv/
+venv/
+
+# --- Secrets (ne jamais publier) ---
+.env
+
+# --- Données locales (comptes, sessions, clients) ---
+*.db
+*.sqlite
+*.sqlite3
+
+# --- Rapports générés ---
+reports/
+
+# --- Divers ---
 .system_generated/
+.DS_Store
